@@ -21,6 +21,10 @@ const CalculateFibonacciSchema = z.object({
   n: z.number().int().positive(),
 });
 
+const GoldenRatioSchema = z.object({
+  value: z.number(),
+});
+
 // Define available tools
 const tools: Tool[] = [
   {
@@ -65,6 +69,7 @@ const tools: Tool[] = [
       properties: {
         value: { type: 'number', description: 'Value to analyze' },
       },
+      required: ['value'],
     },
   },
 ];
@@ -114,12 +119,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'calculate_fibonacci': {
         const { n } = CalculateFibonacciSchema.parse(args);
-        // Calculate Fibonacci number
+        // Calculate Fibonacci number using iterative approach for better performance
         const fib = (num: number): number => {
           if (num <= 1) return num;
-          return fib(num - 1) + fib(num - 2);
+          let prev = 0, curr = 1;
+          for (let i = 2; i <= num; i++) {
+            const next = prev + curr;
+            prev = curr;
+            curr = next;
+          }
+          return curr;
         };
-        const result = fib(Math.min(n, 30)); // Limit to avoid performance issues
+        const result = fib(Math.min(n, 100)); // Support up to 100
         return {
           content: [
             {
@@ -135,7 +146,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'golden_ratio_analysis': {
-        const value = (args as any).value || 1;
+        const { value } = GoldenRatioSchema.parse(args);
         const goldenRatio = 1.618033988749895;
         return {
           content: [

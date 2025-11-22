@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 
 dotenv.config();
 
@@ -58,7 +58,7 @@ wss.on('connection', (ws) => {
     console.log('Received:', message.toString());
     // Broadcast to all clients
     wss.clients.forEach((client) => {
-      if (client.readyState === ws.OPEN) {
+      if (client.readyState === WebSocket.OPEN) {
         client.send(message);
       }
     });

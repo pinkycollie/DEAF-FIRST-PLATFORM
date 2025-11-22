@@ -19,6 +19,15 @@ const ApplyHighContrastSchema = z.object({
   level: z.enum(['low', 'medium', 'high']).optional(),
 });
 
+const SimplifyTextSchema = z.object({
+  text: z.string(),
+  level: z.string().optional(),
+});
+
+const GetRecommendationsSchema = z.object({
+  contentType: z.string(),
+});
+
 // Define available tools
 const tools: Tool[] = [
   {
@@ -145,8 +154,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'simplify_text': {
-        const text = (args as any).text;
-        const level = (args as any).level || '3';
+        const { text, level = '3' } = SimplifyTextSchema.parse(args);
         return {
           content: [
             {
@@ -164,7 +172,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'get_accessibility_recommendations': {
-        const contentType = (args as any).contentType;
+        const { contentType } = GetRecommendationsSchema.parse(args);
         return {
           content: [
             {

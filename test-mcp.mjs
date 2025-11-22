@@ -5,7 +5,7 @@ import { spawn } from 'child_process';
 
 const serverPath = process.argv[2];
 if (!serverPath) {
-  console.error('Usage: node test-mcp.js <path-to-mcp-server.js>');
+  console.error('Usage: node test-mcp.mjs <path-to-mcp-server.js>');
   process.exit(1);
 }
 
