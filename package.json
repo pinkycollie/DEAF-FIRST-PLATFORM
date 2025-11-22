@@ -1,0 +1,67 @@
+{
+  "name": "deaf-first",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Deaf-first SaaS ecosystem with AI-powered workflows",
+  "author": "360 Magicians",
+  "license": "MIT",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "services/deafauth",
+    "services/pinksync",
+    "services/fibonrose",
+    "services/accessibility-nodes",
+    "ai"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"FRONT,BACK,DEAF,PINK,FIBR,A11Y\" -c \"cyan,magenta,yellow,green,blue,red\" \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:deafauth\" \"npm run dev:pinksync\" \"npm run dev:fibonrose\" \"npm run dev:a11y\"",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:deafauth": "npm run dev --workspace=services/deafauth",
+    "dev:pinksync": "npm run dev --workspace=services/pinksync",
+    "dev:fibonrose": "npm run dev --workspace=services/fibonrose",
+    "dev:a11y": "npm run dev --workspace=services/accessibility-nodes",
+    "build": "npm run build --workspaces --if-present",
+    "build:docker": "docker-compose -f configs/deployment/docker-compose.yml build",
+    "deploy": "npm run deploy --workspaces --if-present",
+    "docker:up": "docker-compose -f configs/deployment/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f configs/deployment/docker-compose.yml down",
+    "docker:logs": "docker-compose -f configs/deployment/docker-compose.yml logs -f",
+    "db:setup": "npm run db:setup --workspace=backend && npm run db:setup --workspace=services/deafauth",
+    "db:migrate": "npm run db:migrate --workspaces --if-present",
+    "db:seed": "npm run db:seed --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "npm run test:e2e --workspace=frontend",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "clean": "rm -rf node_modules && npm run clean --workspaces --if-present",
+    "postinstall": "npm run db:setup"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "concurrently": "^9.1.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pinkycollie/Deaf-First-Platform"
+  },
+  "keywords": [
+    "magicians",
+    "deaf-first",
+    "accessibility",
+    "saas",
+    "ai-workflows",
+    "deafauth",
+    "pinksync",
+    "fibonrose",
+    "mcp-server"
+  ]
+}
