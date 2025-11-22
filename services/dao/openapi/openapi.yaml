@@ -3,10 +3,13 @@ info:
   title: MBTQ DAO - Governance API
   version: 1.0.0
   description: Decentralized governance for MBTQ Universe.
+
 servers:
-- url: https://api.mbtquniverse.com/dao
+  - url: https://api.mbtquniverse.com/dao
+
 security:
-- DeafAuthToken: []
+  - DeafAuthToken: []
+
 components:
   securitySchemes:
     DeafAuthToken:

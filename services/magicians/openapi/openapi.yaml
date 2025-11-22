@@ -3,10 +3,13 @@ info:
   title: 360Magicians - AI Agent Platform
   version: 1.0.0
   description: AI agents, workflows, memory, tools and execution engine.
+
 servers:
-- url: https://api.mbtquniverse.com/ai
+  - url: https://api.mbtquniverse.com/ai
+
 security:
-- DeafAuthToken: []
+  - DeafAuthToken: []
+
 components:
   securitySchemes:
     DeafAuthToken:
