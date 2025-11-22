@@ -26,7 +26,7 @@ app.post('/api/optimize/schedule', (req, res) => {
   const { tasks } = req.body;
   
   // Mock optimization logic
-  const optimized = tasks.sort((a: any, b: any) => b.priority - a.priority);
+  const optimized = tasks.sort((a: { priority: number }, b: { priority: number }) => b.priority - a.priority);
   
   res.json({
     success: true,
