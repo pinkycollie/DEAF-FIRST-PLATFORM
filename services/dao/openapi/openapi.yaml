@@ -3,76 +3,84 @@ info:
   title: MBTQ DAO - Governance API
   version: 1.0.0
   description: Decentralized governance for MBTQ Universe.
-
 servers:
-  - url: https://api.mbtquniverse.com/dao
-
+- url: https://api.mbtquniverse.com/dao
 security:
-  - DeafAuthToken: []
-
+- DeafAuthToken: []
 components:
   securitySchemes:
     DeafAuthToken:
       type: http
       scheme: bearer
-
   schemas:
     Proposal:
       type: object
       properties:
-        id: { type: string }
-        title: { type: string }
-        description: { type: string }
-        status: { type: string }
-
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
     Vote:
       type: object
       properties:
-        proposalId: { type: string }
-        vote: { type: string }
-
+        proposalId:
+          type: string
+        vote:
+          type: string
     Member:
       type: object
       properties:
-        id: { type: string }
-        joinedAt: { type: string }
-
+        id:
+          type: string
+        joinedAt:
+          type: string
 paths:
   /proposals:
     get:
-      tags: [Proposals]
+      tags:
+      - Proposals
       summary: List proposals
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Proposal" }
-
+                items:
+                  $ref: '#/components/schemas/Proposal'
+          description: List retrieved successfully
   /vote:
     post:
-      tags: [Voting]
+      tags:
+      - Voting
       summary: Submit vote
       requestBody:
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/Vote" }
+            schema:
+              $ref: '#/components/schemas/Vote'
       responses:
-        "200":
+        '200':
           description: Vote recorded
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Vote" }
-
+              schema:
+                $ref: '#/components/schemas/Vote'
   /members:
     get:
-      tags: [Members]
+      tags:
+      - Members
       summary: List DAO members
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Member" }
+                items:
+                  $ref: '#/components/schemas/Member'
+          description: List retrieved successfully

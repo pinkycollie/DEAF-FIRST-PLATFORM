@@ -3,97 +3,117 @@ info:
   title: 360Magicians - AI Agent Platform
   version: 1.0.0
   description: AI agents, workflows, memory, tools and execution engine.
-
 servers:
-  - url: https://api.mbtquniverse.com/ai
-
+- url: https://api.mbtquniverse.com/ai
 security:
-  - DeafAuthToken: []
-
+- DeafAuthToken: []
 components:
   securitySchemes:
     DeafAuthToken:
       type: http
       scheme: bearer
-
   schemas:
     Agent:
       type: object
       properties:
-        id: { type: string }
-        name: { type: string }
-        model: { type: string }
-        createdAt: { type: string }
-
+        id:
+          type: string
+        name:
+          type: string
+        model:
+          type: string
+        createdAt:
+          type: string
     Run:
       type: object
       properties:
-        id: { type: string }
-        status: { type: string }
-        startedAt: { type: string }
-        output: { type: string }
-
+        id:
+          type: string
+        status:
+          type: string
+        startedAt:
+          type: string
+        output:
+          type: string
     Task:
       type: object
       properties:
-        id: { type: string }
-        agentId: { type: string }
-        status: { type: string }
-
+        id:
+          type: string
+        agentId:
+          type: string
+        status:
+          type: string
     Tool:
       type: object
       properties:
-        id: { type: string }
-        name: { type: string }
-        description: { type: string }
-
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
     Model:
       type: object
       properties:
-        id: { type: string }
-        name: { type: string }
-        provider: { type: string }
-
+        id:
+          type: string
+        name:
+          type: string
+        provider:
+          type: string
     Memory:
       type: object
       properties:
-        id: { type: string }
-        content: { type: string }
-        timestamp: { type: string }
-
+        id:
+          type: string
+        content:
+          type: string
+        timestamp:
+          type: string
     File:
       type: object
       properties:
-        id: { type: string }
-        filename: { type: string }
-        uploadedAt: { type: string }
-
+        id:
+          type: string
+        filename:
+          type: string
+        uploadedAt:
+          type: string
     Workflow:
       type: object
       properties:
-        id: { type: string }
-        name: { type: string }
-        description: { type: string }
-
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
     Schedule:
       type: object
       properties:
-        id: { type: string }
-        agentId: { type: string }
-        cron: { type: string }
-
+        id:
+          type: string
+        agentId:
+          type: string
+        cron:
+          type: string
     Webhook:
       type: object
       properties:
-        id: { type: string }
-        url: { type: string }
-        events: { type: array, items: { type: string } }
-
+        id:
+          type: string
+        url:
+          type: string
+        events:
+          type: array
+          items:
+            type: string
 paths:
-  # Agents
   /agents:
     post:
-      tags: [Agents]
+      tags:
+      - Agents
       summary: Create agent
       requestBody:
         content:
@@ -101,207 +121,238 @@ paths:
             schema:
               type: object
               properties:
-                name: { type: string }
-                model: { type: string }
+                name:
+                  type: string
+                model:
+                  type: string
       responses:
-        "201":
+        '201':
+          description: Agent created successfully
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Agent" }
-
+              schema:
+                $ref: '#/components/schemas/Agent'
     get:
-      tags: [Agents]
+      tags:
+      - Agents
       summary: List agents
       responses:
-        "200":
+        '200':
+          description: List of agents
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Agent" }
-
+                items:
+                  $ref: '#/components/schemas/Agent'
   /agents/{agentId}:
     get:
-      tags: [Agents]
+      tags:
+      - Agents
       summary: Get agent
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
+          description: Agent details
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Agent" }
-
+              schema:
+                $ref: '#/components/schemas/Agent'
     patch:
-      tags: [Agents]
+      tags:
+      - Agents
       summary: Update agent config
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
       responses:
-        "200":
+        '200':
           description: Updated
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Agent" }
-
+              schema:
+                $ref: '#/components/schemas/Agent'
     delete:
-      tags: [Agents]
+      tags:
+      - Agents
       summary: Delete agent
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       responses:
-        "204":
+        '204':
           description: Deleted
-
   /agents/{agentId}/clone:
     post:
-      tags: [Agents]
+      tags:
+      - Agents
       summary: Clone an agent
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       responses:
-        "201":
+        '201':
           description: Cloned agent
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Agent" }
-
-  # Execution and runs
+              schema:
+                $ref: '#/components/schemas/Agent'
   /agents/{agentId}/execute:
     post:
-      tags: [Execution]
+      tags:
+      - Execution
       summary: Execute one-off agent run
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                input: { type: string }
+                input:
+                  type: string
       responses:
-        "200":
+        '200':
+          description: Execution result
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Run" }
-
+              schema:
+                $ref: '#/components/schemas/Run'
   /agents/{agentId}/runs:
     post:
-      tags: [Execution]
+      tags:
+      - Execution
       summary: Start a long-running run
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       responses:
-        "201":
+        '201':
+          description: Run started successfully
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Run" }
-
+              schema:
+                $ref: '#/components/schemas/Run'
   /runs:
     get:
-      tags: [Execution]
+      tags:
+      - Execution
       summary: List runs
       responses:
-        "200":
+        '200':
+          description: List of runs
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Run" }
-
+                items:
+                  $ref: '#/components/schemas/Run'
   /runs/{runId}:
     get:
-      tags: [Execution]
+      tags:
+      - Execution
       summary: Get run status
       parameters:
-        - in: path
-          name: runId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: runId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Run" }
-
+              schema:
+                $ref: '#/components/schemas/Run'
+          description: Retrieved successfully
   /runs/{runId}/cancel:
     post:
-      tags: [Execution]
+      tags:
+      - Execution
       summary: Cancel run
       parameters:
-        - in: path
-          name: runId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: runId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Cancelled
-
   /runs/{runId}/logs:
     get:
-      tags: [Execution]
+      tags:
+      - Execution
       summary: Get execution logs
       parameters:
-        - in: path
-          name: runId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: runId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Execution logs
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  logs: { type: array, items: { type: string } }
-
+                  logs:
+                    type: array
+                    items:
+                      type: string
   /runs/{runId}/artifacts:
     get:
-      tags: [Execution]
+      tags:
+      - Execution
       summary: Get generated files or outputs
       parameters:
-        - in: path
-          name: runId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: runId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Artifacts
           content:
             application/json:
               schema:
                 type: array
-                items: { type: object }
-
-  # Tasks and queue
+                items:
+                  type: object
   /tasks:
     post:
-      tags: [Tasks]
+      tags:
+      - Tasks
       summary: Enqueue task
       requestBody:
         content:
@@ -309,81 +360,93 @@ paths:
             schema:
               type: object
               properties:
-                agentId: { type: string }
-                input: { type: string }
+                agentId:
+                  type: string
+                input:
+                  type: string
       responses:
-        "201":
+        '201':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Task" }
-
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Created successfully
     get:
-      tags: [Tasks]
+      tags:
+      - Tasks
       summary: List tasks
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Task" }
-
+                items:
+                  $ref: '#/components/schemas/Task'
+          description: List retrieved successfully
   /tasks/{taskId}:
     get:
-      tags: [Tasks]
+      tags:
+      - Tasks
       summary: Get task status
       parameters:
-        - in: path
-          name: taskId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: taskId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Task" }
-
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Retrieved successfully
   /tasks/{taskId}/cancel:
     post:
-      tags: [Tasks]
+      tags:
+      - Tasks
       summary: Cancel task
       parameters:
-        - in: path
-          name: taskId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: taskId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Cancelled
-
   /tasks/{taskId}/retry:
     post:
-      tags: [Tasks]
+      tags:
+      - Tasks
       summary: Retry failed task
       parameters:
-        - in: path
-          name: taskId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: taskId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Retrying
-
-  # Tools and capabilities
   /tools:
     get:
-      tags: [Tools]
+      tags:
+      - Tools
       summary: List available tools
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Tool" }
-
+                items:
+                  $ref: '#/components/schemas/Tool'
+          description: List retrieved successfully
     post:
-      tags: [Tools]
+      tags:
+      - Tools
       summary: Register custom tool
       requestBody:
         content:
@@ -391,317 +454,361 @@ paths:
             schema:
               type: object
               properties:
-                name: { type: string }
-                description: { type: string }
+                name:
+                  type: string
+                description:
+                  type: string
       responses:
-        "201":
+        '201':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Tool" }
-
+              schema:
+                $ref: '#/components/schemas/Tool'
+          description: Created successfully
   /tools/{toolId}:
     get:
-      tags: [Tools]
+      tags:
+      - Tools
       summary: Tool details
       parameters:
-        - in: path
-          name: toolId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: toolId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Tool" }
-
+              schema:
+                $ref: '#/components/schemas/Tool'
+          description: Retrieved successfully
     patch:
-      tags: [Tools]
+      tags:
+      - Tools
       summary: Update tool
       parameters:
-        - in: path
-          name: toolId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: toolId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Updated
-
     delete:
-      tags: [Tools]
+      tags:
+      - Tools
       summary: Remove tool
       parameters:
-        - in: path
-          name: toolId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: toolId
+        required: true
+        schema:
+          type: string
       responses:
-        "204":
+        '204':
           description: Deleted
-
   /agents/{agentId}/tools/{toolId}/enable:
     post:
-      tags: [Tools]
+      tags:
+      - Tools
       summary: Enable tool for agent
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
-        - in: path
-          name: toolId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: toolId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Enabled
-
   /agents/{agentId}/tools/{toolId}/disable:
     post:
-      tags: [Tools]
+      tags:
+      - Tools
       summary: Disable tool for agent
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
-        - in: path
-          name: toolId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: toolId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Disabled
-
-  # Models and routing
   /models:
     get:
-      tags: [Models]
+      tags:
+      - Models
       summary: List supported models
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Model" }
-
+                items:
+                  $ref: '#/components/schemas/Model'
+          description: List retrieved successfully
   /agents/{agentId}/model:
     patch:
-      tags: [Models]
+      tags:
+      - Models
       summary: Set primary model
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                modelId: { type: string }
+                modelId:
+                  type: string
       responses:
-        "200":
+        '200':
           description: Updated
-
   /agents/{agentId}/model/fallbacks:
     post:
-      tags: [Models]
+      tags:
+      - Models
       summary: Set fallbacks or routing rules
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                fallbacks: { type: array, items: { type: string } }
+                fallbacks:
+                  type: array
+                  items:
+                    type: string
       responses:
-        "200":
+        '200':
           description: Updated
-
-  # Memory and context
   /agents/{agentId}/memory:
     get:
-      tags: [Memory]
+      tags:
+      - Memory
       summary: Fetch memory items
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Memory" }
-
+                items:
+                  $ref: '#/components/schemas/Memory'
+          description: Retrieved successfully
     post:
-      tags: [Memory]
+      tags:
+      - Memory
       summary: Upsert memory
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                content: { type: string }
+                content:
+                  type: string
       responses:
-        "201":
+        '201':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Memory" }
-
+              schema:
+                $ref: '#/components/schemas/Memory'
+          description: Created successfully
   /agents/{agentId}/memory/{memoryId}:
     delete:
-      tags: [Memory]
+      tags:
+      - Memory
       summary: Delete memory
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
-        - in: path
-          name: memoryId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: memoryId
+        required: true
+        schema:
+          type: string
       responses:
-        "204":
+        '204':
           description: Deleted
-
   /agents/{agentId}/context:
     post:
-      tags: [Memory]
+      tags:
+      - Memory
       summary: Attach ephemeral context for next run
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                context: { type: string }
+                context:
+                  type: string
       responses:
-        "200":
+        '200':
           description: Context attached
-
-  # Files, knowledge, and embeddings
   /agents/{agentId}/files:
     post:
-      tags: [Files]
+      tags:
+      - Files
       summary: Upload knowledge file
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           multipart/form-data:
             schema:
               type: object
               properties:
-                file: { type: string, format: binary }
+                file:
+                  type: string
+                  format: binary
       responses:
-        "201":
+        '201':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/File" }
-
+              schema:
+                $ref: '#/components/schemas/File'
+          description: Created successfully
     get:
-      tags: [Files]
+      tags:
+      - Files
       summary: List files
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/File" }
-
+                items:
+                  $ref: '#/components/schemas/File'
+          description: List retrieved successfully
   /agents/{agentId}/files/{fileId}:
     delete:
-      tags: [Files]
+      tags:
+      - Files
       summary: Remove file
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
-        - in: path
-          name: fileId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
       responses:
-        "204":
+        '204':
           description: Deleted
-
   /agents/{agentId}/ingest:
     post:
-      tags: [Files]
+      tags:
+      - Files
       summary: Start ingestion and embedding
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       responses:
-        "202":
+        '202':
           description: Ingestion started
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  jobId: { type: string }
-
+                  jobId:
+                    type: string
   /agents/{agentId}/ingest/{jobId}:
     get:
-      tags: [Files]
+      tags:
+      - Files
       summary: Ingestion status
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
-        - in: path
-          name: jobId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: jobId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Status
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string }
-
+                  status:
+                    type: string
   /search:
     post:
-      tags: [Files]
+      tags:
+      - Files
       summary: RAG style query across agent knowledge
       requestBody:
         content:
@@ -709,22 +816,26 @@ paths:
             schema:
               type: object
               properties:
-                query: { type: string }
-                agentId: { type: string }
+                query:
+                  type: string
+                agentId:
+                  type: string
       responses:
-        "200":
+        '200':
           description: Search results
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  results: { type: array, items: { type: object } }
-
-  # Workflows and graphs
+                  results:
+                    type: array
+                    items:
+                      type: object
   /workflows:
     post:
-      tags: [Workflows]
+      tags:
+      - Workflows
       summary: Create workflow DAG
       requestBody:
         content:
@@ -732,146 +843,168 @@ paths:
             schema:
               type: object
               properties:
-                name: { type: string }
-                steps: { type: array, items: { type: object } }
+                name:
+                  type: string
+                steps:
+                  type: array
+                  items:
+                    type: object
       responses:
-        "201":
+        '201':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Workflow" }
-
+              schema:
+                $ref: '#/components/schemas/Workflow'
+          description: Created successfully
     get:
-      tags: [Workflows]
+      tags:
+      - Workflows
       summary: List workflows
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Workflow" }
-
+                items:
+                  $ref: '#/components/schemas/Workflow'
+          description: List retrieved successfully
   /workflows/{workflowId}:
     get:
-      tags: [Workflows]
+      tags:
+      - Workflows
       summary: Workflow details
       parameters:
-        - in: path
-          name: workflowId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: workflowId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Workflow" }
-
+              schema:
+                $ref: '#/components/schemas/Workflow'
+          description: Retrieved successfully
   /workflows/{workflowId}/execute:
     post:
-      tags: [Workflows]
+      tags:
+      - Workflows
       summary: Run workflow
       parameters:
-        - in: path
-          name: workflowId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: workflowId
+        required: true
+        schema:
+          type: string
       responses:
-        "202":
+        '202':
           description: Workflow started
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  runId: { type: string }
-
+                  runId:
+                    type: string
   /workflow-runs/{runId}:
     get:
-      tags: [Workflows]
+      tags:
+      - Workflows
       summary: Workflow run status
       parameters:
-        - in: path
-          name: runId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: runId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Status
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string }
-
-  # Scheduling
+                  status:
+                    type: string
   /agents/{agentId}/schedules:
     post:
-      tags: [Scheduling]
+      tags:
+      - Scheduling
       summary: Create schedule
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                cron: { type: string }
+                cron:
+                  type: string
       responses:
-        "201":
+        '201':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Schedule" }
-
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: Created successfully
     get:
-      tags: [Scheduling]
+      tags:
+      - Scheduling
       summary: List schedules
       parameters:
-        - in: path
-          name: agentId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: agentId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Schedule" }
-
+                items:
+                  $ref: '#/components/schemas/Schedule'
+          description: List retrieved successfully
   /schedules/{scheduleId}:
     patch:
-      tags: [Scheduling]
+      tags:
+      - Scheduling
       summary: Update schedule
       parameters:
-        - in: path
-          name: scheduleId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: scheduleId
+        required: true
+        schema:
+          type: string
       responses:
-        "200":
+        '200':
           description: Updated
-
     delete:
-      tags: [Scheduling]
+      tags:
+      - Scheduling
       summary: Delete schedule
       parameters:
-        - in: path
-          name: scheduleId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: scheduleId
+        required: true
+        schema:
+          type: string
       responses:
-        "204":
+        '204':
           description: Deleted
-
-  # Webhooks and events
   /webhooks:
     post:
-      tags: [Webhooks]
+      tags:
+      - Webhooks
       summary: Register webhook
       requestBody:
         content:
@@ -879,41 +1012,50 @@ paths:
             schema:
               type: object
               properties:
-                url: { type: string }
-                events: { type: array, items: { type: string } }
+                url:
+                  type: string
+                events:
+                  type: array
+                  items:
+                    type: string
       responses:
-        "201":
+        '201':
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Webhook" }
-
+              schema:
+                $ref: '#/components/schemas/Webhook'
+          description: Created successfully
     get:
-      tags: [Webhooks]
+      tags:
+      - Webhooks
       summary: List webhooks
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: "#/components/schemas/Webhook" }
-
+                items:
+                  $ref: '#/components/schemas/Webhook'
+          description: List retrieved successfully
   /webhooks/{webhookId}:
     delete:
-      tags: [Webhooks]
+      tags:
+      - Webhooks
       summary: Delete webhook
       parameters:
-        - in: path
-          name: webhookId
-          required: true
-          schema: { type: string }
+      - in: path
+        name: webhookId
+        required: true
+        schema:
+          type: string
       responses:
-        "204":
+        '204':
           description: Deleted
-
   /events/test:
     post:
-      tags: [Webhooks]
+      tags:
+      - Webhooks
       summary: Send test event
       requestBody:
         content:
@@ -921,38 +1063,42 @@ paths:
             schema:
               type: object
               properties:
-                webhookId: { type: string }
+                webhookId:
+                  type: string
       responses:
-        "200":
+        '200':
           description: Test event sent
-
   /events:
     get:
-      tags: [Webhooks]
+      tags:
+      - Webhooks
       summary: Event log
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { type: object }
-
-  # Secrets and configuration
+                items:
+                  type: object
+          description: Retrieved successfully
   /secrets:
     get:
-      tags: [Secrets]
+      tags:
+      - Secrets
       summary: List secret names
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { type: string }
-
+                items:
+                  type: string
+          description: List retrieved successfully
     post:
-      tags: [Secrets]
+      tags:
+      - Secrets
       summary: Set or rotate secret
       requestBody:
         content:
@@ -960,75 +1106,81 @@ paths:
             schema:
               type: object
               properties:
-                name: { type: string }
-                value: { type: string }
+                name:
+                  type: string
+                value:
+                  type: string
       responses:
-        "201":
+        '201':
           description: Secret set
-
   /secrets/{name}:
     delete:
-      tags: [Secrets]
+      tags:
+      - Secrets
       summary: Delete secret
       parameters:
-        - in: path
-          name: name
-          required: true
-          schema: { type: string }
+      - in: path
+        name: name
+        required: true
+        schema:
+          type: string
       responses:
-        "204":
+        '204':
           description: Deleted
-
   /config:
     get:
-      tags: [Configuration]
+      tags:
+      - Configuration
       summary: Current global config and limits
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: object
-
-  # Analytics and audit
+          description: Retrieved successfully
   /metrics:
     get:
-      tags: [Analytics]
+      tags:
+      - Analytics
       summary: Usage metrics per agent
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: object
-
+          description: Retrieved successfully
   /metrics/costs:
     get:
-      tags: [Analytics]
+      tags:
+      - Analytics
       summary: Model and tool cost breakdown
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: object
-
+          description: Retrieved successfully
   /audit:
     get:
-      tags: [Analytics]
+      tags:
+      - Analytics
       summary: Audit log of actions and runs
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: array
-                items: { type: object }
-
-  # Auth integration
+                items:
+                  type: object
+          description: Retrieved successfully
   /tokens/refresh:
     post:
-      tags: [Auth]
+      tags:
+      - Auth
       summary: Internal helper for token refresh
       requestBody:
         content:
@@ -1036,36 +1188,40 @@ paths:
             schema:
               type: object
               properties:
-                refreshToken: { type: string }
+                refreshToken:
+                  type: string
       responses:
-        "200":
+        '200':
           description: Refreshed tokens
-
-  # Health and ops
   /health:
     get:
-      tags: [Health]
+      tags:
+      - Health
       summary: Liveness/readiness check
       responses:
-        "200":
+        '200':
           description: Healthy
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string }
-
+                  status:
+                    type: string
   /version:
     get:
-      tags: [Health]
+      tags:
+      - Health
       summary: Build and model registry versions
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  version: { type: string }
-                  build: { type: string }
+                  version:
+                    type: string
+                  build:
+                    type: string
+          description: Retrieved successfully
