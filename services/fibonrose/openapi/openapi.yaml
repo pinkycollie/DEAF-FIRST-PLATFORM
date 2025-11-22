@@ -1,0 +1,77 @@
+openapi: 3.1.0
+info:
+  title: Fibonrose - Trust Layer
+  version: 1.0.0
+  description: Blockchain trust, verification and decentralized identity.
+
+servers:
+  - url: https://api.mbtquniverse.com/blockchain
+
+security:
+  - DeafAuthToken: []
+
+components:
+  securitySchemes:
+    DeafAuthToken:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        txId: { type: string }
+        timestamp: { type: string }
+        payload: { type: object }
+
+    TrustScore:
+      type: object
+      properties:
+        score: { type: number }
+        lastUpdated: { type: string }
+
+paths:
+  /verify:
+    post:
+      tags: [Blockchain]
+      summary: Verify blockchain transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [txId]
+              properties:
+                txId: { type: string }
+      responses:
+        "200":
+          description: Result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid: { type: boolean }
+
+  /trust-score:
+    get:
+      tags: [Trust]
+      summary: Get trust score
+      responses:
+        "200":
+          description: Score
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TrustScore" }
+
+  /record:
+    post:
+      tags: [Blockchain]
+      summary: Record new transaction
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Transaction" }
+      responses:
+        "201":
+          description: Recorded transaction

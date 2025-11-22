@@ -1,0 +1,77 @@
+openapi: 3.1.0
+info:
+  title: PinkSync - Accessibility Engine
+  version: 1.0.0
+  description: Real-time accessibility preference sync for MBTQ Universe.
+
+servers:
+  - url: https://api.mbtquniverse.com/sync
+
+security:
+  - DeafAuthToken: []
+
+components:
+  securitySchemes:
+    DeafAuthToken:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Preferences:
+      type: object
+      properties:
+        captions: { type: boolean }
+        aslMode: { type: boolean }
+        contrast: { type: string }
+        fontSize: { type: string }
+
+    Feature:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
+
+paths:
+  /status:
+    get:
+      tags: [Sync]
+      summary: Check PinkSync status
+      responses:
+        "200":
+          description: Sync status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  online: { type: boolean }
+                  latencyMs: { type: number }
+
+  /preferences:
+    post:
+      tags: [Preferences]
+      summary: Update accessibility preferences
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Preferences" }
+      responses:
+        "200":
+          description: Updated preferences
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Preferences" }
+
+  /features:
+    get:
+      tags: [Features]
+      summary: List available accessibility features
+      responses:
+        "200":
+          description: List of features
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Feature" }

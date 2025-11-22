@@ -1,0 +1,75 @@
+openapi: 3.1.0
+info:
+  title: MBTQ DAO - Governance API
+  version: 1.0.0
+  description: Decentralized governance for MBTQ Universe.
+
+servers:
+  - url: https://api.mbtquniverse.com/dao
+
+security:
+  - DeafAuthToken: []
+
+components:
+  securitySchemes:
+    DeafAuthToken:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Proposal:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        status: { type: string }
+
+    Vote:
+      type: object
+      properties:
+        proposalId: { type: string }
+        vote: { type: string }
+
+    Member:
+      type: object
+      properties:
+        id: { type: string }
+        joinedAt: { type: string }
+
+paths:
+  /proposals:
+    get:
+      tags: [Proposals]
+      summary: List proposals
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Proposal" }
+
+  /vote:
+    post:
+      tags: [Voting]
+      summary: Submit vote
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Vote" }
+      responses:
+        "200":
+          description: Vote recorded
+
+  /members:
+    get:
+      tags: [Members]
+      summary: List DAO members
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Member" }
