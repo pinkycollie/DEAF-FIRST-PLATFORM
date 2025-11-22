@@ -11,7 +11,7 @@ import { z } from 'zod';
 // Tool schemas
 const SyncDataSchema = z.object({
   channel: z.string(),
-  data: z.record(z.any()),
+  data: z.record(z.string(), z.unknown()),
 });
 
 const SubscribeSchema = z.object({
