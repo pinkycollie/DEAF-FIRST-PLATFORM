@@ -19,6 +19,11 @@ const GenerateContentSchema = z.object({
   type: z.enum(['text', 'image', 'video']),
 });
 
+const AnalyzeAccessibilitySchema = z.object({
+  content: z.string(),
+  contentType: z.string().optional(),
+});
+
 // Define available tools
 const tools: Tool[] = [
   {
@@ -142,8 +147,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'analyze_accessibility': {
-        const content = (args as any).content;
-        const contentType = (args as any).contentType || 'text';
+        const { content, contentType = 'text' } = AnalyzeAccessibilitySchema.parse(args);
         
         return {
           content: [

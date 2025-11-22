@@ -39,13 +39,19 @@ app.post('/api/optimize/schedule', (req, res) => {
 app.get('/api/fibonacci/:n', (req, res) => {
   const n = parseInt(req.params.n);
   
-  // Calculate Fibonacci number
+  // Calculate Fibonacci number using iterative approach
   const fib = (num: number): number => {
     if (num <= 1) return num;
-    return fib(num - 1) + fib(num - 2);
+    let prev = 0, curr = 1;
+    for (let i = 2; i <= num; i++) {
+      const next = prev + curr;
+      prev = curr;
+      curr = next;
+    }
+    return curr;
   };
   
-  const result = fib(Math.min(n, 30)); // Limit to avoid performance issues
+  const result = fib(Math.min(n, 100)); // Support up to 100
   
   res.json({
     success: true,
