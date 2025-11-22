@@ -1,0 +1,38 @@
+{
+  "mcpServers": {
+    "deafauth": {
+      "command": "node",
+      "args": ["services/deafauth/dist/mcp-server.js"],
+      "description": "DeafAUTH - Accessible authentication service",
+      "env": {
+        "DEAFAUTH_DATABASE_URL": "postgresql://user:password@localhost:5432/deafauth"
+      }
+    },
+    "pinksync": {
+      "command": "node",
+      "args": ["services/pinksync/dist/mcp-server.js"],
+      "description": "PinkSync - Real-time synchronization service",
+      "env": {
+        "REDIS_URL": "redis://localhost:6379"
+      }
+    },
+    "fibonrose": {
+      "command": "node",
+      "args": ["services/fibonrose/dist/mcp-server.js"],
+      "description": "FibonRose - Mathematical optimization engine"
+    },
+    "accessibility-nodes": {
+      "command": "node",
+      "args": ["services/accessibility-nodes/dist/mcp-server.js"],
+      "description": "Accessibility Nodes - Modular accessibility features"
+    },
+    "ai": {
+      "command": "node",
+      "args": ["ai/dist/mcp-server.js"],
+      "description": "AI Services - AI-powered workflows",
+      "env": {
+        "OPENAI_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}

@@ -36,8 +36,7 @@
     "lint": "npm run lint --workspaces --if-present",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "npm run type-check --workspaces --if-present",
-    "clean": "rm -rf node_modules && npm run clean --workspaces --if-present",
-    "postinstall": "npm run db:setup"
+    "clean": "rm -rf node_modules && npm run clean --workspaces --if-present"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
