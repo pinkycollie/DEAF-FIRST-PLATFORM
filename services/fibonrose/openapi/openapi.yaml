@@ -75,3 +75,6 @@ paths:
       responses:
         "201":
           description: Recorded transaction
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Transaction" }

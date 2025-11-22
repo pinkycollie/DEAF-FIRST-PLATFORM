@@ -151,6 +151,9 @@ paths:
       responses:
         "200":
           description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Agent" }
 
     delete:
       tags: [Agents]
