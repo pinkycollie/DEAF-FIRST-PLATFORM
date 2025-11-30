@@ -1,0 +1,25 @@
+# Railway Deployment Configuration
+# Free Tier Deployment for DEAF-FIRST ASL Biometrics
+
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install && npm run build --workspace=services/asl-biometrics"
+
+[deploy]
+startCommand = "npm run start --workspace=services/asl-biometrics"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[static]
+# Not a static site
+
+[[services]]
+name = "asl-biometrics"
+internalPort = 3007
+protocol = "HTTP"
+
+[[services.headers]]
+path = "/api/*"
+headers = { "Access-Control-Allow-Origin" = "*" }
