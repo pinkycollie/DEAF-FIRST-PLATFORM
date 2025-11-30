@@ -45,8 +45,10 @@ export function AccessibilityProvider({
       if (stored) {
         try {
           return { ...defaultPreferences, ...JSON.parse(stored) };
-        } catch {
-          // Ignore parse errors
+        } catch (error) {
+          // Clear invalid stored data and log warning
+          console.warn('Invalid accessibility preferences in localStorage, resetting to defaults:', error);
+          localStorage.removeItem(storageKey);
         }
       }
     }

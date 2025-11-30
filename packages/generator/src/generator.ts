@@ -1156,7 +1156,13 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+// JWT secret must be set in production
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET environment variable is required in production');
+}
+const jwtSecret = JWT_SECRET || 'dev-only-secret-change-in-production';
 
 // In-memory user store (replace with database in production)
 const users: Map<string, { id: string; username: string; email: string; password: string; accessibilityPreferences: object }> = new Map();
@@ -1211,7 +1217,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
     
-    const token = jwt.sign({ userId: user.id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id, username: user.username }, jwtSecret, { expiresIn: '7d' });
     
     res.json({
       success: true,
@@ -1231,7 +1237,7 @@ router.get('/me', (req, res) => {
   
   try {
     const token = authHeader.slice(7);
-    const decoded = jwt.verify(token, JWT_SECRET) as { username: string };
+    const decoded = jwt.verify(token, jwtSecret) as { username: string };
     const user = users.get(decoded.username);
     
     if (!user) {
@@ -1366,7 +1372,12 @@ async function generateBackendMiddleware(backendDir: string): Promise<void> {
   const authMiddleware = `import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+// JWT secret must be set in production
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET environment variable is required in production');
+}
+const jwtSecret = JWT_SECRET || 'dev-only-secret-change-in-production';
 
 export interface AuthRequest extends Request {
   userId?: string;
@@ -1383,7 +1394,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
   
   try {
     const token = authHeader.slice(7);
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; username: string };
+    const decoded = jwt.verify(token, jwtSecret) as { userId: string; username: string };
     
     req.userId = decoded.userId;
     req.username = decoded.username;
@@ -1457,8 +1468,8 @@ async function generateEnvFiles(
 BACKEND_PORT=3000
 NODE_ENV=development
 
-# JWT
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
+# JWT - IMPORTANT: Change this before deploying to production!
+JWT_SECRET=CHANGE-ME-IN-PRODUCTION-GENERATE-A-RANDOM-SECRET
 JWT_EXPIRY=7d
 
 # Frontend
