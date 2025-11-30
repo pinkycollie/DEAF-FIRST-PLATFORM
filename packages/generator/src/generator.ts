@@ -2,7 +2,6 @@ import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import ora from 'ora';
-import Handlebars from 'handlebars';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
