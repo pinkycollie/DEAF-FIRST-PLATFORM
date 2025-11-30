@@ -12,7 +12,10 @@
     "services/pinksync",
     "services/fibonrose",
     "services/accessibility-nodes",
-    "ai"
+    "ai",
+    "packages/core",
+    "packages/deaf-ui",
+    "packages/generator"
   ],
   "scripts": {
     "dev": "concurrently -n \"FRONT,BACK,DEAF,PINK,FIBR,A11Y\" -c \"cyan,magenta,yellow,green,blue,red\" \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:deafauth\" \"npm run dev:pinksync\" \"npm run dev:fibonrose\" \"npm run dev:a11y\"",
@@ -22,6 +25,7 @@
     "dev:pinksync": "npm run dev --workspace=services/pinksync",
     "dev:fibonrose": "npm run dev --workspace=services/fibonrose",
     "dev:a11y": "npm run dev --workspace=services/accessibility-nodes",
+    "create": "npm run start --workspace=packages/generator --",
     "build": "npm run build --workspaces --if-present",
     "build:docker": "docker-compose -f configs/deployment/docker-compose.yml build",
     "deploy": "npm run deploy --workspaces --if-present",
