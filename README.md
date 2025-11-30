@@ -16,6 +16,7 @@ This is a monorepo managed with npm workspaces containing:
 - **services/pinksync**: Real-time synchronization service
 - **services/fibonrose**: Mathematical optimization engine
 - **services/accessibility-nodes**: Modular accessibility features
+- **services/asl-biometrics**: ASL-based biometric verification for telehealth
 - **ai**: AI services for deaf-first workflows
 
 ## Prerequisites
@@ -58,12 +59,13 @@ npm run dev
 
 ### Run individual services
 ```bash
-npm run dev:frontend    # Frontend only
-npm run dev:backend     # Backend only
-npm run dev:deafauth    # DeafAUTH only
-npm run dev:pinksync    # PinkSync only
-npm run dev:fibonrose   # FibonRose only
-npm run dev:a11y        # Accessibility nodes only
+npm run dev:frontend        # Frontend only
+npm run dev:backend         # Backend only
+npm run dev:deafauth        # DeafAUTH only
+npm run dev:pinksync        # PinkSync only
+npm run dev:fibonrose       # FibonRose only
+npm run dev:a11y            # Accessibility nodes only
+npm run dev:asl-biometrics  # ASL Biometrics service
 ```
 
 ### Build
@@ -164,6 +166,14 @@ Each workspace is independently versioned and can be developed, tested, and depl
 - Sign language generation
 - MCP server for AI operations
 
+### ASL Biometrics (@deaf-first/asl-biometrics)
+- ASL-based biometric identity verification
+- Hand motion detection and analysis
+- Telehealth verification workflows
+- Cost-optimized with browser-based detection (MediaPipe)
+- HIPAA-aware data handling
+- Free tier deployment ready (Vercel, Supabase, Railway)
+
 ## Environment Variables
 
 Create a `.env` file in the root directory:
@@ -190,10 +200,41 @@ PINKSYNC_PORT=3003
 FIBONROSE_PORT=3004
 A11Y_PORT=3005
 AI_PORT=3006
+ASL_BIOMETRICS_PORT=3007
 
 # AI Services
 OPENAI_API_KEY=your-openai-key
+
+# ASL Biometrics (optional - for Supabase backend)
+SUPABASE_URL=your-supabase-url
+SUPABASE_ANON_KEY=your-anon-key
+BIOMETRIC_ENCRYPTION_KEY=your-encryption-key
 ```
+
+## Free Tier Deployment
+
+The platform is designed for cost-optimized deployment using free tier services:
+
+### Recommended Stack
+- **Frontend**: Vercel Free Tier
+- **Backend Services**: Railway Free Tier
+- **Database**: Supabase Free Tier (500MB)
+- **Monitoring**: Uptime Robot Free Tier
+
+### Deployment Configurations
+See `configs/deployment/free-tier/` for:
+- `vercel.json` - Vercel deployment configuration
+- `railway.toml` - Railway deployment configuration  
+- `supabase-setup.md` - Supabase database schema and setup
+- `uptime-robot-setup.md` - Monitoring configuration
+
+## Legal Compliance
+
+Privacy policy and data protection templates are provided in the `legal/` directory:
+- `PRIVACY_POLICY_TEMPLATE.md` - Customizable privacy policy
+- `BIOMETRIC_DATA_PROTECTION_AGREEMENT.md` - Biometric data handling agreement
+
+These templates are designed for HIPAA, GDPR, and biometric data protection compliance.
 
 ## Contributing
 
@@ -222,3 +263,5 @@ MIT License - see LICENSE file for details
 - MCP server
 - Real-time synchronization
 - Sign language support
+- ASL biometrics
+- Telehealth verification

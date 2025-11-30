@@ -12,16 +12,18 @@
     "services/pinksync",
     "services/fibonrose",
     "services/accessibility-nodes",
+    "services/asl-biometrics",
     "ai"
   ],
   "scripts": {
-    "dev": "concurrently -n \"FRONT,BACK,DEAF,PINK,FIBR,A11Y\" -c \"cyan,magenta,yellow,green,blue,red\" \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:deafauth\" \"npm run dev:pinksync\" \"npm run dev:fibonrose\" \"npm run dev:a11y\"",
+    "dev": "concurrently -n \"FRONT,BACK,DEAF,PINK,FIBR,A11Y,ASLB\" -c \"cyan,magenta,yellow,green,blue,red,white\" \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:deafauth\" \"npm run dev:pinksync\" \"npm run dev:fibonrose\" \"npm run dev:a11y\" \"npm run dev:asl-biometrics\"",
     "dev:frontend": "npm run dev --workspace=frontend",
     "dev:backend": "npm run dev --workspace=backend",
     "dev:deafauth": "npm run dev --workspace=services/deafauth",
     "dev:pinksync": "npm run dev --workspace=services/pinksync",
     "dev:fibonrose": "npm run dev --workspace=services/fibonrose",
     "dev:a11y": "npm run dev --workspace=services/accessibility-nodes",
+    "dev:asl-biometrics": "npm run dev --workspace=services/asl-biometrics",
     "build": "npm run build --workspaces --if-present",
     "build:docker": "docker-compose -f configs/deployment/docker-compose.yml build",
     "deploy": "npm run deploy --workspaces --if-present",
@@ -61,6 +63,8 @@
     "deafauth",
     "pinksync",
     "fibonrose",
-    "mcp-server"
+    "mcp-server",
+    "asl-biometrics",
+    "telehealth"
   ]
 }

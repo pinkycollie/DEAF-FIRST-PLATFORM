@@ -77,6 +77,16 @@ services:
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
 
+  asl-biometrics:
+    build:
+      context: .
+      dockerfile: Dockerfile.asl-biometrics
+    ports:
+      - "3007:3007"
+    environment:
+      - ASL_BIOMETRICS_PORT=3007
+      - NODE_ENV=production
+
   frontend:
     build:
       context: .

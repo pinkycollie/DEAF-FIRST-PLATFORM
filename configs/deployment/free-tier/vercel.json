@@ -1,0 +1,46 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "name": "deaf-first-asl-biometrics",
+  "buildCommand": "npm run build --workspace=services/asl-biometrics",
+  "outputDirectory": "services/asl-biometrics/dist",
+  "installCommand": "npm install",
+  "framework": null,
+  "functions": {
+    "services/asl-biometrics/dist/**/*.js": {
+      "memory": 512,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    {
+      "src": "/health",
+      "dest": "/services/asl-biometrics/dist/index.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/services/asl-biometrics/dist/index.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "ASL_BIOMETRICS_PORT": "3007"
+  },
+  "regions": ["iad1"],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Authorization" }
+      ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/admin/cleanup",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
