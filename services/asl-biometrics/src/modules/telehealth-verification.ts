@@ -64,7 +64,7 @@ export async function initializeSession(
   
   // Check if patient has enrolled biometrics
   const patientProfile = getUserProfile(patientId);
-  const requiresEnrollment = !patientProfile || patientProfile.enrolledPatterns === 0;
+  const requiresEnrollment = patientProfile === null || patientProfile.enrolledPatterns === 0;
   
   // Generate verification challenge
   const challenge = generateVerificationChallenge();

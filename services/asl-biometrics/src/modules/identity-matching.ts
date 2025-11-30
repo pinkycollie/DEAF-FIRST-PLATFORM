@@ -15,6 +15,15 @@ import {
   validateMotionQuality 
 } from './hand-motion-detection.js';
 
+// Configuration for verification thresholds (can be overridden via environment)
+export const BIOMETRIC_CONFIG = {
+  // Minimum match score required for successful verification (0-1)
+  // Higher values = more secure but may cause more false rejections
+  VERIFICATION_THRESHOLD: parseFloat(process.env.BIOMETRIC_VERIFICATION_THRESHOLD || '0.75'),
+  // Minimum quality score for enrollment
+  MIN_ENROLLMENT_QUALITY: parseFloat(process.env.BIOMETRIC_MIN_QUALITY || '0.5'),
+} as const;
+
 // User biometric profile schema
 export const BiometricProfileSchema = z.object({
   userId: z.string().uuid(),
@@ -154,9 +163,8 @@ export async function verifyIdentity(
     }
   }
   
-  // Threshold for verification (configurable)
-  const VERIFICATION_THRESHOLD = 0.75;
-  const verified = bestMatchScore >= VERIFICATION_THRESHOLD;
+  // Use configurable verification threshold
+  const verified = bestMatchScore >= BIOMETRIC_CONFIG.VERIFICATION_THRESHOLD;
   
   return {
     verified,

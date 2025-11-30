@@ -140,7 +140,10 @@ export function extractMotionFeatures(sequence: MotionSequence): MotionFeatures 
   const avgFingerSpread = fingerSpreads.reduce((a, b) => a + b, 0) / fingerSpreads.length;
   const avgWristMovement = wristMovements.reduce((a, b) => a + b, 0) / wristMovements.length;
   
-  // Calculate motion smoothness (lower variance = smoother motion)
+  // Calculate motion smoothness using inverse variance formula:
+  // smoothness = 1 / (1 + variance)
+  // This maps high variance (erratic motion) to low smoothness (near 0)
+  // and low variance (consistent motion) to high smoothness (near 1)
   const velocityVariance = velocities.reduce((acc, v) => 
     acc + Math.pow(v - avgVelocity, 2), 0
   ) / velocities.length;

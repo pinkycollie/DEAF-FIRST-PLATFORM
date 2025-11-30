@@ -5,6 +5,7 @@
  * Designed for telehealth verification contexts.
  */
 
+import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { 
   HandFrame, 
@@ -371,7 +372,7 @@ export function generateVerificationChallenge(): VerificationChallenge {
     gestureType: selectedGesture,
     instructions: instructions[selectedGesture] || 'Perform the sign',
     expiresAt: Date.now() + 60000, // 1 minute expiry
-    challengeId: crypto.randomUUID(),
+    challengeId: uuidv4(),
   };
 }
 

@@ -5,7 +5,7 @@
  * Bootstrap-ready implementation with lean dependencies.
  */
 
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
@@ -28,6 +28,54 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.ASL_BIOMETRICS_PORT || 3007;
+
+// Simple in-memory rate limiter for MVP (use Redis in production)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 10; // Max requests per window for verification endpoints
+
+function getRateLimitKey(req: Request): string {
+  // Use IP + session ID for more granular limiting
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const sessionId = req.params.sessionId || 'global';
+  return `${ip}:${sessionId}`;
+}
+
+function rateLimitMiddleware(req: Request, res: Response, next: NextFunction): void {
+  const key = getRateLimitKey(req);
+  const now = Date.now();
+  
+  const entry = rateLimitStore.get(key);
+  
+  if (!entry || now > entry.resetTime) {
+    // New window or expired entry
+    rateLimitStore.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    next();
+    return;
+  }
+  
+  if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
+    res.status(429).json({
+      success: false,
+      error: 'Too many requests. Please wait before trying again.',
+      retryAfter: Math.ceil((entry.resetTime - now) / 1000),
+    });
+    return;
+  }
+  
+  entry.count++;
+  next();
+}
+
+// Clean up expired rate limit entries periodically
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of rateLimitStore.entries()) {
+    if (now > entry.resetTime) {
+      rateLimitStore.delete(key);
+    }
+  }
+}, RATE_LIMIT_WINDOW_MS);
 
 // Middleware
 app.use(helmet({
@@ -108,9 +156,9 @@ app.get('/api/telehealth/session/:sessionId', (req, res) => {
 });
 
 /**
- * Enroll patient biometrics
+ * Enroll patient biometrics (rate-limited)
  */
-app.post('/api/telehealth/session/:sessionId/enroll', async (req, res) => {
+app.post('/api/telehealth/session/:sessionId/enroll', rateLimitMiddleware, async (req, res) => {
   try {
     const { sessionId } = req.params;
     const { motionSequence } = req.body;
@@ -134,9 +182,9 @@ app.post('/api/telehealth/session/:sessionId/enroll', async (req, res) => {
 });
 
 /**
- * Verify patient identity
+ * Verify patient identity (rate-limited to prevent brute force attacks)
  */
-app.post('/api/telehealth/session/:sessionId/verify', async (req, res) => {
+app.post('/api/telehealth/session/:sessionId/verify', rateLimitMiddleware, async (req, res) => {
   try {
     const { sessionId } = req.params;
     const { motionSequence } = req.body;
