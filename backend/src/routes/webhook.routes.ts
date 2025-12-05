@@ -5,6 +5,61 @@ import { WebhookRequest, WebhookEventType } from '../types/webhook.types';
 const router = Router();
 
 /**
+ * GET /api/webhooks/events/types
+ * Get list of available webhook event types
+ * IMPORTANT: This must be defined before /:id routes
+ */
+router.get('/events/types', (req: Request, res: Response) => {
+  try {
+    const eventTypes = Object.values(WebhookEventType);
+    
+    res.json({
+      success: true,
+      count: eventTypes.length,
+      events: eventTypes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve event types',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * POST /api/webhooks/trigger
+ * Manually trigger a webhook event (for testing)
+ * IMPORTANT: This must be defined before /:id routes
+ */
+router.post('/trigger', async (req: Request, res: Response) => {
+  try {
+    const { event, data } = req.body;
+
+    if (!event || !data) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid request',
+        message: 'Event and data are required'
+      });
+    }
+
+    await webhookService.triggerEvent(event, data);
+
+    res.json({
+      success: true,
+      message: 'Webhook event triggered successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to trigger webhook event',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
  * GET /api/webhooks
  * List all registered webhooks
  */
@@ -23,6 +78,29 @@ router.get('/', (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to retrieve webhooks',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * GET /api/webhooks/:id/deliveries
+ * Get delivery history for a webhook
+ * IMPORTANT: This must be defined before the generic /:id route
+ */
+router.get('/:id/deliveries', (req: Request, res: Response) => {
+  try {
+    const deliveries = webhookService.getDeliveries(req.params.id);
+
+    res.json({
+      success: true,
+      count: deliveries.length,
+      deliveries
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve deliveries',
       message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
@@ -163,81 +241,6 @@ router.delete('/:id', (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to delete webhook',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-/**
- * POST /api/webhooks/trigger
- * Manually trigger a webhook event (for testing)
- */
-router.post('/trigger', async (req: Request, res: Response) => {
-  try {
-    const { event, data } = req.body;
-
-    if (!event || !data) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid request',
-        message: 'Event and data are required'
-      });
-    }
-
-    await webhookService.triggerEvent(event, data);
-
-    res.json({
-      success: true,
-      message: 'Webhook event triggered successfully'
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Failed to trigger webhook event',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-/**
- * GET /api/webhooks/:id/deliveries
- * Get delivery history for a webhook
- */
-router.get('/:id/deliveries', (req: Request, res: Response) => {
-  try {
-    const deliveries = webhookService.getDeliveries(req.params.id);
-
-    res.json({
-      success: true,
-      count: deliveries.length,
-      deliveries
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Failed to retrieve deliveries',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-/**
- * GET /api/webhooks/events/types
- * Get list of available webhook event types
- */
-router.get('/events/types', (req: Request, res: Response) => {
-  try {
-    const eventTypes = Object.values(WebhookEventType);
-    
-    res.json({
-      success: true,
-      count: eventTypes.length,
-      events: eventTypes
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Failed to retrieve event types',
       message: error instanceof Error ? error.message : 'Unknown error'
     });
   }

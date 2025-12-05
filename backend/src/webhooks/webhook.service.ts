@@ -157,9 +157,18 @@ class WebhookService {
    */
   verifySignature(payload: string, signature: string, secret: string): boolean {
     const expectedSignature = this.generateSignature(payload, secret);
+    // Normalize signatures to ensure they're in the same format (hex)
+    const normalizedSignature = signature.toLowerCase().trim();
+    const normalizedExpected = expectedSignature.toLowerCase().trim();
+    
+    // Ensure both signatures have the same length before comparison
+    if (normalizedSignature.length !== normalizedExpected.length) {
+      return false;
+    }
+    
     return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
+      Buffer.from(normalizedSignature, 'hex'),
+      Buffer.from(normalizedExpected, 'hex')
     );
   }
 
@@ -174,7 +183,7 @@ class WebhookService {
    * Generate unique ID
    */
   private generateId(): string {
-    return `wh_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `wh_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   }
 
   /**

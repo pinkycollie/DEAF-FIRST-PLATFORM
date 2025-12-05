@@ -20,7 +20,7 @@ router.post('/:service', async (req: Request, res: Response) => {
 
     // Create webhook event
     const webhookEvent: WebhookEvent = {
-      id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `evt_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       event: event || 'unknown',
       timestamp: new Date().toISOString(),
       data: req.body,
