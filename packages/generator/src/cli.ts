@@ -26,7 +26,17 @@ program
     console.log(chalk.gray(`Creating project: ${chalk.white.bold(projectName)}`));
     console.log(chalk.gray(`Template: ${chalk.white.bold(options.template)}\n`));
     
-    await createProject(projectName, options);
+    try {
+      await createProject(projectName, options);
+    } catch (error) {
+      console.error(chalk.red.bold('\n❌ Failed to create project!'));
+      if (error instanceof Error) {
+        console.error(chalk.red(error.message));
+      } else {
+        console.error(chalk.red(String(error)));
+      }
+      process.exit(1);
+    }
   });
 
 program

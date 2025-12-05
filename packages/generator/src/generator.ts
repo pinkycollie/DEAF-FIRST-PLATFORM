@@ -17,10 +17,24 @@ export interface ProjectOptions {
   output: string;
 }
 
+// Helper function to validate project name
+function isValidProjectName(name: string): boolean {
+  // Not empty, not just whitespace, and does not contain invalid characters
+  if (!name || name.trim().length === 0) return false;
+  // Invalid characters for most filesystems: / \ : * ? " < > | 
+  const invalidChars = /[\/\\:\*\?"<>\|]/;
+  return !invalidChars.test(name);
+}
+
 export async function createProject(
   projectName: string,
   options: ProjectOptions
 ): Promise<void> {
+  if (!isValidProjectName(projectName)) {
+    console.error(chalk.red('Error: Invalid project name. Project name must not be empty and cannot contain any of the following characters: / \\ : * ? " < > |'));
+    throw new Error('Invalid project name');
+  }
+
   const spinner = ora('Creating project structure...').start();
   
   const outputDir = path.resolve(options.output, projectName);

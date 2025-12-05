@@ -95,7 +95,7 @@ export function AccessibilityProvider({
 
   const resetPreferences = useCallback(() => {
     setPreferences(defaultPreferences);
-  }, []);
+  }, [defaultPreferences]);
 
   return (
     <AccessibilityContext.Provider value={{ preferences, updatePreference, resetPreferences }}>
