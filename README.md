@@ -99,6 +99,30 @@ npm run docker:logs     # View Docker logs
 npm run build:docker    # Build Docker images
 ```
 
+## Webhook System
+
+The platform includes a comprehensive webhook system for real-time event notifications:
+
+```bash
+# Start backend with webhook support
+npm run dev:backend
+
+# Access webhook API at http://localhost:3000/api/webhooks
+```
+
+**Features:**
+- Register and manage webhooks via REST API
+- Receive webhooks from external services (Xano, Stripe, etc.)
+- HMAC-SHA256 signature verification
+- 12 predefined event types (user, auth, document, accessibility, sync, AI)
+- Webhook delivery tracking and history
+- Test endpoints for development
+
+**Documentation:**
+- [Quick Start Guide](./QUICKSTART-WEBHOOKS.md) - Get started in minutes
+- [API Reference](./WEBHOOK-API.md) - Complete API documentation
+- [Migration Guide](./WEBHOOK-MIGRATION-GUIDE.md) - Migrate from Xano
+
 ## MCP Server Support
 
 The platform includes Model Context Protocol (MCP) server support in several services:
@@ -193,6 +217,10 @@ AI_PORT=3006
 
 # AI Services
 OPENAI_API_KEY=your-openai-key
+
+# Webhook Configuration
+WEBHOOK_SECRET=your-webhook-secret-key-here
+XANO_WEBHOOK_SECRET=your-xano-webhook-secret
 ```
 
 ## Contributing
