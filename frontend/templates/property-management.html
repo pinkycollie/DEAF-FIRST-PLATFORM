@@ -32,9 +32,11 @@
         .title {
             font-size: 3.5rem;
             font-weight: 900;
+            color: #667eea;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 15px;
         }
         
@@ -75,6 +77,7 @@
         .feature-icon {
             font-size: 3rem;
             margin-bottom: 20px;
+            user-select: none;
         }
         
         .feature-title {
@@ -256,15 +259,17 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <header class="header" role="banner">
             <h1 class="title">🏠 Deaf-First Smart Property Management</h1>
             <p class="subtitle">Complete Platform for Accessible Housing & Property Operations</p>
             <p class="tagline">Powered by MBTQ Universe + ASL AI Infrastructure</p>
-        </div>
+        </header>
 
+        <main role="main">
+        <section aria-label="Platform Features">
         <div class="platform-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🎥</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🎥</div>
                 <h3 class="feature-title">ASL Video Communication</h3>
                 <p class="feature-desc">All tenant-landlord communication via sign language with AI-powered translation</p>
                 <ul class="feature-points">
@@ -275,10 +280,10 @@
                     <li>VRS provider integration for hearing landlords</li>
                 </ul>
                 <span class="accessibility-badge">ASL-First Design</span>
-            </div>
+            </article>
             
-            <div class="feature-card">
-                <div class="feature-icon">🔔</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🔔</div>
                 <h3 class="feature-title">Visual Alert System</h3>
                 <p class="feature-desc">Smart home integration with visual notifications for all property alerts</p>
                 <ul class="feature-points">
@@ -289,10 +294,10 @@
                     <li>Emergency evacuation visual guidance</li>
                 </ul>
                 <span class="accessibility-badge">IoT Enabled</span>
-            </div>
+            </article>
             
-            <div class="feature-card">
-                <div class="feature-icon">💰</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">💰</div>
                 <h3 class="feature-title">Automated Rent & Payments</h3>
                 <p class="feature-desc">Seamless payment processing with visual confirmations and ASL support</p>
                 <ul class="feature-points">
@@ -305,8 +310,8 @@
                 <span class="accessibility-badge">FibonRose Compliant</span>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon">🔧</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🔧</div>
                 <h3 class="feature-title">Smart Maintenance System</h3>
                 <p class="feature-desc">AI-powered maintenance requests with visual documentation</p>
                 <ul class="feature-points">
@@ -319,8 +324,8 @@
                 <span class="accessibility-badge">AI-Powered</span>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">📱</div>
                 <h3 class="feature-title">Mobile-First Platform</h3>
                 <p class="feature-desc">Complete property management in your pocket with accessibility built-in</p>
                 <ul class="feature-points">
@@ -333,8 +338,8 @@
                 <span class="accessibility-badge">Mobile Native</span>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon">🏘️</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🏘️</div>
                 <h3 class="feature-title">Community Features</h3>
                 <p class="feature-desc">Build Deaf-friendly communities with social and safety features</p>
                 <ul class="feature-points">
@@ -347,8 +352,8 @@
                 <span class="accessibility-badge">Community-Driven</span>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">📊</div>
                 <h3 class="feature-title">Landlord Dashboard</h3>
                 <p class="feature-desc">Property owners get AI-powered analytics and automation</p>
                 <ul class="feature-points">
@@ -361,8 +366,8 @@
                 <span class="accessibility-badge">PinkSync Automated</span>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🔒</div>
                 <h3 class="feature-title">Security & Privacy</h3>
                 <p class="feature-desc">DeafAUTH-powered security with complete data protection</p>
                 <ul class="feature-points">
@@ -375,8 +380,8 @@
                 <span class="accessibility-badge">DeafAUTH Secured</span>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon">🌍</div>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🌍</div>
                 <h3 class="feature-title">Regional Sign Language</h3>
                 <p class="feature-desc">Support for ASL, BSL, Auslan, and other sign languages globally</p>
                 <ul class="feature-points">
@@ -387,10 +392,11 @@
                     <li>International property management support</li>
                 </ul>
                 <span class="accessibility-badge">Global Ready</span>
-            </div>
+            </article>
         </div>
+        </section>
         
-        <div class="integration-section">
+        <section class="integration-section" aria-label="Technology Stack">
             <h2 class="section-title">🚀 Technology Stack</h2>
             <div class="tech-stack">
                 <div class="tech-item">
@@ -426,9 +432,9 @@
                     <div class="tech-role">AI agents for customer support, maintenance routing, and analytics</div>
                 </div>
             </div>
-        </div>
+        </section>
         
-        <div class="workflow-diagram">
+        <section class="workflow-diagram" aria-label="Tenant Onboarding Workflow">
             <h2 class="section-title">📋 Tenant Onboarding Workflow</h2>
             <div class="workflow-steps">
                 <div class="workflow-step">
@@ -472,13 +478,16 @@
                     <div class="step-desc">Introduction to Deaf neighbors and local resources</div>
                 </div>
             </div>
-        </div>
+        </section>
         
+        <section aria-label="Call to Action">
         <div class="cta-section">
             <h2 class="cta-title">Ready to Build the Future of Accessible Housing?</h2>
-            <button class="cta-button">Launch Platform on mbtq.dev</button>
-            <button class="cta-button">View Technical Architecture</button>
+            <button class="cta-button" aria-label="Launch Platform on mbtq.dev">Launch Platform on mbtq.dev</button>
+            <button class="cta-button" aria-label="View Technical Architecture">View Technical Architecture</button>
         </div>
+        </section>
+        </main>
     </div>
 </body>
 </html>
