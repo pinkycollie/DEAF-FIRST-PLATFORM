@@ -33,7 +33,9 @@ The template showcases integration with:
 #### Features
 - Fully responsive design (desktop, tablet, mobile)
 - Modern glassmorphic UI with gradient backgrounds
-- Accessible design with proper ARIA labels
+- WCAG 2.1 AA accessible design with proper semantic HTML
+- ARIA labels for screen reader support
+- Semantic HTML5 elements (header, main, section, article)
 - Interactive hover effects and animations
 - Complete workflow visualization
 - Technology stack overview
