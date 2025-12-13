@@ -2,9 +2,13 @@
 
 A deaf-first SaaS ecosystem with AI-powered workflows and comprehensive accessibility features.
 
+🌐 **[View Live Demo on GitHub Pages](https://pinkycollie.github.io/DEAF-FIRST-PLATFORM/)**
+
 ## Overview
 
 The DEAF-FIRST Platform is a monorepo containing multiple services designed with accessibility as the primary focus. It includes authentication, real-time synchronization, AI workflows, and specialized accessibility nodes.
+
+The platform features a modern, cutting-edge showcase interface that demonstrates all services and capabilities. See [GITHUB-PAGES-SETUP.md](./GITHUB-PAGES-SETUP.md) for deployment details.
 
 ## Architecture
 
