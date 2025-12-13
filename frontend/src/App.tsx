@@ -3,7 +3,6 @@ import './App.css';
 
 function App() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [showFeatures, setShowFeatures] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
   const services = [
@@ -63,15 +62,15 @@ function App() {
   };
 
   const handleGetStarted = () => {
-    window.open('https://github.com/pinkycollie/DEAF-FIRST-PLATFORM', '_blank');
+    window.open('https://github.com/pinkycollie/DEAF-FIRST-PLATFORM', '_blank', 'noopener,noreferrer');
   };
 
   const handleViewDocs = () => {
-    window.open('https://github.com/pinkycollie/DEAF-FIRST-PLATFORM#readme', '_blank');
+    window.open('https://github.com/pinkycollie/DEAF-FIRST-PLATFORM#readme', '_blank', 'noopener,noreferrer');
   };
 
   const handleLiveDemo = () => {
-    setShowFeatures(!showFeatures);
+    setActiveTab('features');
   };
 
   return (
