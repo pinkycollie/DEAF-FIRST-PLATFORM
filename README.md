@@ -1,5 +1,10 @@
 # DEAF-FIRST Platform
 
+[![CI](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/ci.yml/badge.svg)](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org/)
+[![NPM Version](https://img.shields.io/badge/npm-%3E%3D10.0.0-brightgreen)](https://www.npmjs.com/)
+
 A deaf-first SaaS ecosystem with AI-powered workflows, comprehensive accessibility features, and a powerful generator for creating production-ready SaaS applications.
 
 ## 🚀 Overview
