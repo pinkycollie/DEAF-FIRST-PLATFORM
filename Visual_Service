@@ -1,0 +1,213 @@
+import React, { useState } from 'react';
+import { Play, Pause, Camera, Monitor, Wifi, Database, Zap, Users, Shield, Brain, Eye, Layers, CheckCircle, ArrowRight, Code, Video, FileText, Sparkles, Wand2, Cpu } from 'lucide-react';
+
+const MBTQVisualPlatform = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isRecording, setIsRecording] = useState(false);
+  const [annotationMode, setAnnotationMode] = useState(false);
+  const [processingStage, setProcessingStage] = useState(0);
+
+  const tabs = [
+    { id: 'overview', label: 'System Overview', icon: Eye },
+    { id: 'equipment', label: 'Equipment Stack', icon: Camera },
+    { id: 'workflow', label: 'PinkSync Workflow', icon: Zap },
+    { id: 'prototype', label: 'Live Prototype', icon: Video },
+    { id: 'architecture', label: 'Architecture', icon: Layers }
+  ];
+
+  const equipmentTiers = [
+    {
+      tier: 'MVP Setup',
+      budget: '$300-500',
+      items: [
+        { name: 'Tempered Glass Panel', cost: '$50', source: 'Hardware Store' },
+        { name: 'LED Ring Light', cost: '$80', source: 'Amazon' },
+        { name: 'Smartphone Tripod', cost: '$30', source: 'Amazon' },
+        { name: 'Neon Markers', cost: '$15', source: 'Office Supply' },
+        { name: 'DaVinci Resolve', cost: 'Free', source: 'BlackmagicDesign' }
+      ]
+    },
+    {
+      tier: 'Professional Setup',
+      budget: '$2K-3K',
+      items: [
+        { name: 'Transparent LED Display', cost: '$1200', source: 'Pro AV Supplier' },
+        { name: 'Sony A7 III Camera', cost: '$1800', source: 'B&H Photo' },
+        { name: 'Elgato Cam Link 4K', cost: '$130', source: 'Amazon' },
+        { name: 'OBS Studio Pro', cost: 'Free', source: 'obsproject.com' },
+        { name: 'Professional Lighting Kit', cost: '$300', source: 'B&H Photo' }
+      ]
+    },
+    {
+      tier: 'Enterprise Setup',
+      budget: '$8K-12K',
+      items: [
+        { name: 'Professional Lightboard', cost: '$5000', source: 'Lightboard.info' },
+        { name: 'PTZ Camera System', cost: '$3000', source: 'Pro AV' },
+        { name: 'vMix Pro License', cost: '$1200', source: 'vmix.com' },
+        { name: 'Studio Lighting Grid', cost: '$2000', source: 'Pro AV' },
+        { name: 'Audio Interface + Mics', cost: '$800', source: 'B&H Photo' }
+      ]
+    }
+  ];
+
+  const workflowStages = [
+    { 
+      stage: 'Capture', 
+      icon: Camera, 
+      component: 'OBS Studio',
+      actions: ['Start recording', 'Overlay graphics', 'Real-time monitoring'],
+      output: 'Raw video + metadata'
+    },
+    { 
+      stage: 'Upload', 
+      icon: Wifi, 
+      component: 'PinkSync',
+      actions: ['Auto-upload to Firebase', 'Generate thumbnails', 'Extract keyframes'],
+      output: 'Cloud-stored assets'
+    },
+    { 
+      stage: 'Process', 
+      icon: Brain, 
+      component: '360 Magicians',
+      actions: ['OCR annotations', 'Vector tracing', 'Visual summarization'],
+      output: 'Structured annotation data'
+    },
+    { 
+      stage: 'Validate', 
+      icon: Shield, 
+      component: 'Fibonrose',
+      actions: ['Quality scoring', 'Tag generation', 'Reputation assignment'],
+      output: 'Validated knowledge node'
+    },
+    { 
+      stage: 'Serve', 
+      icon: Monitor, 
+      component: 'Vercel Edge',
+      actions: ['Deploy to CDN', 'Generate access tokens', 'Enable community feedback'],
+      output: 'Live educational content'
+    }
+  ];
+
+  const architectureComponents = [
+    {
+      layer: 'Identity Layer',
+      component: 'DeafAUTH',
+      purpose: 'Access control & authentication',
+      tech: 'Firebase Auth + Custom JWT',
+      icon: Shield
+    },
+    {
+      layer: 'Execution Layer',
+      component: 'PinkSync',
+      purpose: 'Workflow automation & orchestration',
+      tech: 'Vercel Functions + GitHub Actions',
+      icon: Zap
+    },
+    {
+      layer: 'Trust Layer',
+      component: 'Fibonrose',
+      purpose: 'Quality validation & reputation',
+      tech: 'Smart contracts + IPFS',
+      icon: CheckCircle
+    },
+    {
+      layer: 'Intelligence Layer',
+      component: '360 Magicians',
+      purpose: 'AI-powered content processing',
+      tech: 'Claude API + Computer Vision',
+      icon: Wand2
+    },
+    {
+      layer: 'Storage Layer',
+      component: 'Firebase + IPFS',
+      purpose: 'Persistent data & media storage',
+      tech: 'Cloud Firestore + Distributed storage',
+      icon: Database
+    }
+  ];
+
+  const simulateRecording = () => {
+    setIsRecording(!isRecording);
+    if (!isRecording) {
+      setProcessingStage(0);
+      const interval = setInterval(() => {
+        setProcessingStage(prev => {
+          if (prev >= 4) {
+            clearInterval(interval);
+            setIsRecording(false);
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, 2000);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Wand2 className="w-12 h-12 text-pink-400 animate-pulse" />
+            <h1 className="text-6xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+              MBTQ Visual-First Education
+            </h1>
+            <Wand2 className="w-12 h-12 text-blue-400 animate-pulse" />
+          </div>
+          <p className="text-2xl text-blue-300 mb-2">Transparent Annotation System Architecture</p>
+          <p className="text-lg text-pink-300 italic">✨ Powered by Creative Magician ✨</p>
+          <div className="mt-6 flex items-center justify-center gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <Eye className="w-5 h-5 text-pink-400" />
+              <span>Deaf-First Design</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Brain className="w-5 h-5 text-purple-400" />
+              <span>AI-Powered Processing</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-blue-400" />
+              <span>Trust-Validated</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+          {tabs.map(tab => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-pink-500 to-purple-500 shadow-lg scale-105'
+                    : 'bg-white/10 hover:bg-white/20'
+                }`}
+              >
+                <Icon className="w-5 h-5" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Content Area */}
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
+          
+          {/* Overview Tab */}
+          {activeTab === 'overview' && (
+            <div className="space-y-8">
+              <h2 className="text-4xl font-bold mb-6">System Overview</h2>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-xl p-6 border border-pink-500/30">
+                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                    <Eye className="w-6 h-6" />
+                    The Visual Problem
+                  </h3>
+                  <p className="text-gray-200 leading-relaxed">
+                    Traditional education relies on audio narration. Technical concepts are explained through voice

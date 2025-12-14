@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deaf-First Smart Property Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: #a0a0a0;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        
+        .feature-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .feature-desc {
+            color: #b0b0b0;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        .feature-points {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-points li {
+            padding: 8px 0;
+            color: #d0d0d0;
+            position: relative;
+            padding-left: 25px;
+            font-size: 0.95rem;
+        }
+        
+        .feature-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .integration-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .tech-item {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .tech-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .tech-role {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+        
+        .workflow-diagram {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .workflow-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .step-number {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+        
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .step-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .accessibility-badge {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(102, 126, 234, 0.4);
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header" role="banner">
+            <h1 class="title">🏠 Deaf-First Smart Property Management</h1>
+            <p class="subtitle">Complete Platform for Accessible Housing & Property Operations</p>
+            <p class="tagline">Powered by MBTQ Universe + ASL AI Infrastructure</p>
+        </header>
+
+        <main role="main">
+        <section aria-label="Platform Features">
+        <div class="platform-grid">
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🎥</div>
+                <h3 class="feature-title">ASL Video Communication</h3>
+                <p class="feature-desc">All tenant-landlord communication via sign language with AI-powered translation</p>
+                <ul class="feature-points">
+                    <li>Real-time ASL video calls with asl-ai-app interface</li>
+                    <li>Automated maintenance request translation</li>
+                    <li>24/7 ASL emergency hotline with AI routing</li>
+                    <li>Video lease signing and documentation</li>
+                    <li>VRS provider integration for hearing landlords</li>
+                </ul>
+                <span class="accessibility-badge">ASL-First Design</span>
+            </article>
+            
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🔔</div>
+                <h3 class="feature-title">Visual Alert System</h3>
+                <p class="feature-desc">Smart home integration with visual notifications for all property alerts</p>
+                <ul class="feature-points">
+                    <li>Doorbell with video + flashing lights</li>
+                    <li>Fire/smoke alarms with strobe integration</li>
+                    <li>Package delivery visual notifications</li>
+                    <li>Maintenance visit scheduling alerts</li>
+                    <li>Emergency evacuation visual guidance</li>
+                </ul>
+                <span class="accessibility-badge">IoT Enabled</span>
+            </article>
+            
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">💰</div>
+                <h3 class="feature-title">Automated Rent & Payments</h3>
+                <p class="feature-desc">Seamless payment processing with visual confirmations and ASL support</p>
+                <ul class="feature-points">
+                    <li>Auto-pay with visual payment confirmations</li>
+                    <li>ASL video explanations of charges</li>
+                    <li>Payment plan negotiation via video chat</li>
+                    <li>Utility payment tracking and splitting</li>
+                    <li>Transparent fee breakdown in ASL</li>
+                </ul>
+                <span class="accessibility-badge">FibonRose Compliant</span>
+            </div>
+            
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🔧</div>
+                <h3 class="feature-title">Smart Maintenance System</h3>
+                <p class="feature-desc">AI-powered maintenance requests with visual documentation</p>
+                <ul class="feature-points">
+                    <li>Submit requests via ASL video or photos</li>
+                    <li>360Magicians AI categorizes and routes issues</li>
+                    <li>Real-time status updates with visual timeline</li>
+                    <li>Contractor coordination with ASL support</li>
+                    <li>Quality verification through video review</li>
+                </ul>
+                <span class="accessibility-badge">AI-Powered</span>
+            </div>
+            
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">📱</div>
+                <h3 class="feature-title">Mobile-First Platform</h3>
+                <p class="feature-desc">Complete property management in your pocket with accessibility built-in</p>
+                <ul class="feature-points">
+                    <li>Native iOS/Android apps with asl-ai-app core</li>
+                    <li>Offline mode for areas with poor connectivity</li>
+                    <li>Push notifications with visual indicators</li>
+                    <li>Document scanning and ASL annotation</li>
+                    <li>Community board with video posts</li>
+                </ul>
+                <span class="accessibility-badge">Mobile Native</span>
+            </div>
+            
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🏘️</div>
+                <h3 class="feature-title">Community Features</h3>
+                <p class="feature-desc">Build Deaf-friendly communities with social and safety features</p>
+                <ul class="feature-points">
+                    <li>Deaf neighbor directory (opt-in)</li>
+                    <li>Community events in ASL</li>
+                    <li>Shared amenity booking with visual calendar</li>
+                    <li>Safety buddy system for emergencies</li>
+                    <li>Local Deaf business recommendations</li>
+                </ul>
+                <span class="accessibility-badge">Community-Driven</span>
+            </div>
+            
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">📊</div>
+                <h3 class="feature-title">Landlord Dashboard</h3>
+                <p class="feature-desc">Property owners get AI-powered analytics and automation</p>
+                <ul class="feature-points">
+                    <li>Portfolio overview with visual KPIs</li>
+                    <li>Automated lease renewals with ASL notifications</li>
+                    <li>Maintenance cost tracking and predictions</li>
+                    <li>Tenant satisfaction scores</li>
+                    <li>ADA compliance monitoring and reporting</li>
+                </ul>
+                <span class="accessibility-badge">PinkSync Automated</span>
+            </div>
+            
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🔒</div>
+                <h3 class="feature-title">Security & Privacy</h3>
+                <p class="feature-desc">DeafAUTH-powered security with complete data protection</p>
+                <ul class="feature-points">
+                    <li>Verified Deaf community member authentication</li>
+                    <li>End-to-end encrypted video communication</li>
+                    <li>GDPR/CCPA compliant data handling</li>
+                    <li>Blockchain lease agreements via FibonRose</li>
+                    <li>Privacy-first identity verification</li>
+                </ul>
+                <span class="accessibility-badge">DeafAUTH Secured</span>
+            </div>
+            
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🌍</div>
+                <h3 class="feature-title">Regional Sign Language</h3>
+                <p class="feature-desc">Support for ASL, BSL, Auslan, and other sign languages globally</p>
+                <ul class="feature-points">
+                    <li>Multi-language sign language recognition</li>
+                    <li>Regional dialect adaptation via ML</li>
+                    <li>Cultural context awareness in translations</li>
+                    <li>Local Deaf community standards integration</li>
+                    <li>International property management support</li>
+                </ul>
+                <span class="accessibility-badge">Global Ready</span>
+            </article>
+        </div>
+        </section>
+        
+        <section class="integration-section" aria-label="Technology Stack">
+            <h2 class="section-title">🚀 Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="tech-name">asl-ai-app</div>
+                    <div class="tech-role">Frontend UI with video chat, visual alerts, and mobile apps</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">asl-ai-engine</div>
+                    <div class="tech-role">ML engine for ASL recognition, request categorization, and predictions</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">asl-gateway-fastapi</div>
+                    <div class="tech-role">API gateway handling all property operations and integrations</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">pinksync/full-stack</div>
+                    <div class="tech-role">Automation engine for maintenance, payments, and compliance</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">DeafAUTH</div>
+                    <div class="tech-role">Identity verification for tenants, landlords, and service providers</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">PinkSync</div>
+                    <div class="tech-role">Workflow automation for lease management and operations</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">FibonRose</div>
+                    <div class="tech-role">Legal compliance, fair housing monitoring, and trust scoring</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-name">360Magicians</div>
+                    <div class="tech-role">AI agents for customer support, maintenance routing, and analytics</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="workflow-diagram" aria-label="Tenant Onboarding Workflow">
+            <h2 class="section-title">📋 Tenant Onboarding Workflow</h2>
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Property Search</div>
+                    <div class="step-desc">Browse Deaf-accessible properties with ASL video tours</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">DeafAUTH Verify</div>
+                    <div class="step-desc">Secure identity verification and community validation</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Video Application</div>
+                    <div class="step-desc">Submit rental application via ASL video interview</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Smart Screening</div>
+                    <div class="step-desc">AI-powered fair screening with FibonRose compliance</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-title">ASL Lease Review</div>
+                    <div class="step-desc">Lease terms explained in sign language with Q&A</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Digital Signing</div>
+                    <div class="step-desc">Video signature with blockchain verification</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">7</div>
+                    <div class="step-title">Move-In Setup</div>
+                    <div class="step-desc">Automated key exchange, utility setup, IoT device pairing</div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">8</div>
+                    <div class="step-title">Community Welcome</div>
+                    <div class="step-desc">Introduction to Deaf neighbors and local resources</div>
+                </div>
+            </div>
+        </section>
+        
+        <section aria-label="Call to Action">
+        <div class="cta-section">
+            <h2 class="cta-title">Ready to Build the Future of Accessible Housing?</h2>
+            <button class="cta-button" aria-label="Launch Platform on mbtq.dev">Launch Platform on mbtq.dev</button>
+            <button class="cta-button" aria-label="View Technical Architecture">View Technical Architecture</button>
+        </div>
+        </section>
+        </main>
+    </div>
+</body>
+</html>
