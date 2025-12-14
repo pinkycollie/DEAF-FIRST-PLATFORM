@@ -78,8 +78,7 @@
         "agent_id": "data_processor_001",
         "type": "internal",
         "status": "active",
-        "
-": {
+        "details": {
           "name": "Data Processing Agent",
           "description": "Cleans, transforms, and validates data",
           "triggers": ["file_uploaded", "data_import", "scheduled_etl"],
