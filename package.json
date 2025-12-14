@@ -16,6 +16,7 @@
     "packages/core",
     "packages/deaf-ui",
     "packages/generator"
+    "ai"
   ],
   "scripts": {
     "dev": "concurrently -n \"FRONT,BACK,DEAF,PINK,FIBR,A11Y\" -c \"cyan,magenta,yellow,green,blue,red\" \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:deafauth\" \"npm run dev:pinksync\" \"npm run dev:fibonrose\" \"npm run dev:a11y\"",

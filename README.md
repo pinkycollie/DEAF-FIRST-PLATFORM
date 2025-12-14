@@ -147,6 +147,57 @@ npm run create -- templates              # List available templates
 npm run create -- info                   # Show platform information
 ```
 
+A deaf-first SaaS ecosystem with AI-powered workflows and comprehensive accessibility features.
+
+## Overview
+
+The DEAF-FIRST Platform is a monorepo containing multiple services designed with accessibility as the primary focus. It includes authentication, real-time synchronization, AI workflows, and specialized accessibility nodes.
+
+## Architecture
+
+This is a monorepo managed with npm workspaces containing:
+
+- **frontend**: React-based accessible user interface
+- **backend**: Express API server
+- **services/deafauth**: DeafAUTH authentication service with MCP server support
+- **services/pinksync**: Real-time synchronization service
+- **services/fibonrose**: Mathematical optimization engine
+- **services/accessibility-nodes**: Modular accessibility features
+- **ai**: AI services for deaf-first workflows
+
+## Prerequisites
+
+- Node.js >= 20.0.0
+- npm >= 10.0.0
+- PostgreSQL (for backend and deafauth)
+- Redis (for pinksync)
+
+## Quick Start
+
+1. Clone the repository:
+```bash
+git clone https://github.com/pinkycollie/Deaf-First-Platform.git
+cd Deaf-First-Platform
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+4. Run all services in development mode:
+```bash
+npm run dev
+```
+
+## Development Scripts
+
 ### Run all services
 ```bash
 npm run dev
@@ -307,7 +358,7 @@ MIT License - see LICENSE file for details
 
 ## Author
 
-360 Magicians
+Pinky Collie
 
 ## Keywords
 
