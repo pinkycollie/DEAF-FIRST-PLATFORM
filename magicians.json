@@ -1145,7 +1145,7 @@
   
   "environment_variables": {
     "OPENAI_API_KEY": "sk-...",
-    "ANTHROPIC_API_KEY": "sk-ant-...",
+    "ANTHROPIC_API_KEY": "YOUR_ANTHROPIC_API_KEY_HERE",
     "DATABASE_URL": "postgresql://...",
     "REDIS_URL": "redis://...",
     "AGENT_CONCURRENCY": "10",
