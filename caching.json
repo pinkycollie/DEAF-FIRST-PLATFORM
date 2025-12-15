@@ -1,0 +1,733 @@
+{
+  "cache_management_system": {
+    "version": "1.0.0",
+    "purpose": "Complete caching strategy and performance optimization for deaf platform",
+    
+    "cache_layers": {
+      "cdn_cache": {
+        "provider": "Cloudflare | Fastly | AWS CloudFront",
+        "purpose": "Edge caching for static assets and media",
+        "cached_content": {
+          "videos": {
+            "ttl": "7 days",
+            "cache_key": "video_id + quality",
+            "purge_on": ["video.deleted", "video.updated"]
+          },
+          "images": {
+            "ttl": "30 days",
+            "formats": ["original", "thumbnail", "optimized"],
+            "cache_control": "public, max-age=2592000"
+          },
+          "static_assets": {
+            "ttl": "365 days",
+            "content": ["js", "css", "fonts", "icons"],
+            "versioning": "hash-based for cache busting"
+          }
+        },
+        "configuration": {
+          "compression": "gzip | brotli",
+          "http2_push": true,
+          "smart_routing": true,
+          "geo_location_routing": true
+        }
+      },
+      
+      "application_cache": {
+        "provider": "Redis",
+        "purpose": "Hot data caching for API responses",
+        
+        "cache_strategies": {
+          "user_sessions": {
+            "ttl": "24 hours",
+            "key_pattern": "session:{session_id}",
+            "data": {
+              "user_id": "uuid",
+              "auth_token": "jwt",
+              "preferences": {},
+              "last_activity": "timestamp"
+            }
+          },
+          
+          "user_profiles": {
+            "ttl": "1 hour",
+            "key_pattern": "user:{user_id}",
+            "invalidate_on": ["profile.updated", "settings.changed"],
+            "include": ["basic_info", "preferences", "stats"]
+          },
+          
+          "video_metadata": {
+            "ttl": "6 hours",
+            "key_pattern": "video:{video_id}",
+            "data": ["title", "description", "urls", "stats"],
+            "invalidate_on": ["video.updated", "video.deleted"]
+          },
+          
+          "product_catalog": {
+            "ttl": "30 minutes",
+            "key_pattern": "product:{product_id}",
+            "invalidate_on": ["product.updated", "inventory.changed"]
+          },
+          
+          "search_results": {
+            "ttl": "5 minutes",
+            "key_pattern": "search:{query_hash}",
+            "max_cached_pages": 3,
+            "reasoning": "Search results change frequently"
+          },
+          
+          "api_responses": {
+            "ttl": "2 minutes",
+            "key_pattern": "api:{endpoint}:{params_hash}",
+            "exclude_endpoints": ["/cart", "/checkout", "/messages"],
+            "cache_only_get": true
+          },
+          
+          "feed_data": {
+            "ttl": "3 minutes",
+            "key_pattern": "feed:{user_id}:{type}",
+            "types": ["following", "trending", "local"],
+            "pagination_cached": true
+          },
+          
+          "category_listings": {
+            "ttl": "15 minutes",
+            "key_pattern": "category:{category_id}:page:{page}",
+            "invalidate_on": ["product.created", "category.updated"]
+          }
+        },
+        
+        "cache_warming": {
+          "description": "Pre-populate cache for common queries",
+          "strategies": [
+            {
+              "name": "Popular products",
+              "schedule": "Every 30 minutes",
+              "query": "Top 100 products by views"
+            },
+            {
+              "name": "Trending content",
+              "schedule": "Every 10 minutes",
+              "query": "Trending videos and posts"
+            },
+            {
+              "name": "Featured categories",
+              "schedule": "Every hour",
+              "query": "Main category pages"
+            }
+          ]
+        }
+      },
+      
+      "database_query_cache": {
+        "provider": "Redis | Memcached",
+        "purpose": "Cache expensive database queries",
+        
+        "cached_queries": {
+          "user_stats": {
+            "query": "SELECT COUNT(*) posts, followers FROM...",
+            "ttl": "10 minutes",
+            "key_pattern": "query:user_stats:{user_id}"
+          },
+          
+          "aggregations": {
+            "examples": [
+              "Product ratings summary",
+              "User engagement metrics",
+              "Event attendance counts"
+            ],
+            "ttl": "5 minutes",
+            "recompute_on_write": true
+          },
+          
+          "complex_joins": {
+            "ttl": "15 minutes",
+            "examples": [
+              "User with posts and comments",
+              "Product with reviews and seller info"
+            ]
+          }
+        }
+      },
+      
+      "browser_cache": {
+        "purpose": "Client-side caching via HTTP headers",
+        
+        "cache_control_headers": {
+          "static_assets": {
+            "header": "Cache-Control: public, max-age=31536000, immutable",
+            "applies_to": ["css", "js", "fonts", "versioned images"]
+          },
+          
+          "dynamic_content": {
+            "header": "Cache-Control: private, max-age=0, must-revalidate",
+            "applies_to": ["user dashboard", "messages", "cart"]
+          },
+          
+          "public_pages": {
+            "header": "Cache-Control: public, max-age=300, s-maxage=600",
+            "applies_to": ["product pages", "category pages", "public profiles"]
+          }
+        },
+        
+        "etag_support": {
+          "enabled": true,
+          "generate_for": ["API responses", "HTML pages"],
+          "validation": "If-None-Match header"
+        }
+      }
+    },
+
+    "cache_invalidation": {
+      "strategies": {
+        "time_based": {
+          "description": "Expire after TTL",
+          "use_for": "Most cached data"
+        },
+        
+        "event_based": {
+          "description": "Invalidate on specific events",
+          "examples": [
+            {
+              "event": "product.updated",
+              "invalidate": [
+                "product:{product_id}",
+                "category:{category_id}:*",
+                "search:*"
+              ]
+            },
+            {
+              "event": "user.profile_updated",
+              "invalidate": [
+                "user:{user_id}",
+                "api:users:{user_id}:*"
+              ]
+            }
+          ]
+        },
+        
+        "manual_purge": {
+          "endpoint": "POST /api/v1/cache/purge",
+          "permission": "admin",
+          "request_body": {
+            "keys": ["user:123", "product:*"],
+            "pattern": "Supports wildcards"
+          }
+        },
+        
+        "cascade_invalidation": {
+          "description": "Invalidate related caches",
+          "example": "Deleting user invalidates their posts, comments, etc."
+        }
+      },
+      
+      "cache_tags": {
+        "description": "Tag-based invalidation for grouped content",
+        "example": {
+          "tag": "user:123:content",
+          "includes": ["All posts", "All comments", "All videos by user"],
+          "purge_command": "Purge tag 'user:123:content'"
+        }
+      }
+    },
+
+    "cache_monitoring": {
+      "metrics": {
+        "hit_rate": {
+          "target": "> 85%",
+          "calculation": "cache_hits / (cache_hits + cache_misses)"
+        },
+        "miss_rate": {
+          "target": "< 15%",
+          "alert_threshold": "> 30%"
+        },
+        "eviction_rate": {
+          "description": "Items removed before TTL",
+          "alert_if": "High eviction rate indicates insufficient memory"
+        },
+        "latency": {
+          "target": "< 1ms for Redis operations",
+          "p99": "< 5ms"
+        },
+        "memory_usage": {
+          "max": "80% of allocated memory",
+          "alert_threshold": "> 85%"
+        }
+      },
+      
+      "logging": {
+        "log_cache_misses": true,
+        "log_slow_operations": "> 10ms",
+        "log_invalidations": true
+      }
+    }
+  },
+
+  "session_management": {
+    "base_url": "/api/v1/sessions",
+    
+    "session_storage": {
+      "provider": "Redis",
+      "session_format": {
+        "session_id": "uuid",
+        "user_id": "uuid",
+        "created_at": "timestamp",
+        "expires_at": "timestamp",
+        "last_activity": "timestamp",
+        "device_info": {
+          "type": "mobile | desktop",
+          "os": "iOS 17",
+          "browser": "Safari 17",
+          "ip_address": "192.168.1.1"
+        },
+        "accessibility_preferences": {}
+      },
+      "ttl": "7 days with sliding expiration"
+    },
+    
+    "session_endpoints": {
+      "list_sessions": {
+        "method": "GET",
+        "endpoint": "/api/v1/sessions",
+        "description": "List all active sessions for current user",
+        "response": {
+          "sessions": [
+            {
+              "id": "session_id",
+              "device_info": {},
+              "current": true,
+              "created_at": "timestamp",
+              "last_activity": "timestamp"
+            }
+          ]
+        }
+      },
+      
+      "revoke_session": {
+        "method": "DELETE",
+        "endpoint": "/api/v1/sessions/:sessionId",
+        "description": "Logout from specific device",
+        "webhook_trigger": "session.revoked"
+      },
+      
+      "revoke_all_sessions": {
+        "method": "DELETE",
+        "endpoint": "/api/v1/sessions/all",
+        "description": "Logout from all devices except current",
+        "webhook_trigger": "sessions.all_revoked"
+      }
+    }
+  },
+
+  "file_storage_system": {
+    "base_url": "/api/v1/storage",
+    
+    "storage_providers": {
+      "primary": "AWS S3 | Google Cloud Storage | Azure Blob",
+      "cdn": "CloudFront | Cloudflare",
+      "backup": "Separate bucket in different region"
+    },
+    
+    "file_upload": {
+      "direct_upload": {
+        "method": "POST",
+        "endpoint": "/api/v1/storage/upload/presigned",
+        "description": "Get presigned URL for direct client upload",
+        "request_body": {
+          "filename": "video.mp4",
+          "content_type": "video/mp4",
+          "file_size": 52428800,
+          "upload_type": "video | image | document | audio"
+        },
+        "response": {
+          "upload_url": "https://s3.../presigned-url",
+          "file_id": "uuid",
+          "fields": {
+            "key": "uploads/uuid/video.mp4",
+            "policy": "base64_policy",
+            "signature": "signature"
+          },
+          "expires_in": 3600
+        }
+      },
+      
+      "multipart_upload": {
+        "description": "For files > 100MB",
+        "endpoints": {
+          "initiate": "POST /api/v1/storage/multipart/initiate",
+          "upload_part": "PUT /api/v1/storage/multipart/:uploadId/part/:partNumber",
+          "complete": "POST /api/v1/storage/multipart/:uploadId/complete"
+        }
+      }
+    },
+    
+    "file_processing": {
+      "video_processing": {
+        "on_upload": [
+          "Generate thumbnails",
+          "Transcode to multiple qualities (1080p, 720p, 480p, 360p)",
+          "Extract audio for caption generation",
+          "Scan for inappropriate content",
+          "Generate preview clips"
+        ],
+        "formats": ["MP4 (H.264)", "WebM (VP9)"],
+        "processor": "AWS MediaConvert | FFmpeg"
+      },
+      
+      "image_processing": {
+        "on_upload": [
+          "Generate thumbnails (100x100, 300x300, 600x600)",
+          "Optimize compression",
+          "Convert to WebP",
+          "Extract EXIF data",
+          "Detect faces (for accessibility)"
+        ]
+      },
+      
+      "document_processing": {
+        "on_upload": [
+          "Extract text (OCR if needed)",
+          "Generate preview images",
+          "Scan for viruses",
+          "Validate file integrity"
+        ]
+      }
+    },
+    
+    "storage_organization": {
+      "structure": {
+        "/uploads": "Temporary upload area",
+        "/videos": "Processed videos",
+        "/images": "User images and photos",
+        "/documents": "PDFs and documents",
+        "/thumbnails": "Generated thumbnails",
+        "/avatars": "User profile pictures",
+        "/products": "Product images",
+        "/backups": "System backups"
+      },
+      
+      "naming_convention": "{user_id}/{type}/{timestamp}_{uuid}.{ext}"
+    },
+    
+    "cdn_integration": {
+      "video_streaming": {
+        "protocol": "HLS | DASH",
+        "adaptive_bitrate": true,
+        "urls": {
+          "master_playlist": "https://cdn.../video.m3u8",
+          "segments": "https://cdn.../segment_001.ts"
+        }
+      },
+      
+      "image_optimization": {
+        "on_the_fly": true,
+        "parameters": "?w=300&h=300&fit=crop&format=webp",
+        "formats": ["webp", "avif", "jpg", "png"]
+      }
+    }
+  },
+
+  "queue_system": {
+    "provider": "Redis (Bull) | RabbitMQ | AWS SQS",
+    "purpose": "Asynchronous job processing",
+    
+    "queues": {
+      "video_processing": {
+        "priority": "high",
+        "concurrency": 5,
+        "jobs": [
+          "Transcode video",
+          "Generate thumbnails",
+          "Extract captions",
+          "AI content analysis"
+        ],
+        "retry_strategy": {
+          "attempts": 3,
+          "backoff": "exponential",
+          "delay": "1min, 5min, 15min"
+        }
+      },
+      
+      "notifications": {
+        "priority": "high",
+        "concurrency": 20,
+        "jobs": [
+          "Send push notification",
+          "Send email",
+          "Send SMS",
+          "Trigger visual alert"
+        ]
+      },
+      
+      "emails": {
+        "priority": "medium",
+        "concurrency": 10,
+        "jobs": [
+          "Welcome email",
+          "Password reset",
+          "Order confirmation",
+          "Weekly digest"
+        ]
+      },
+      
+      "analytics": {
+        "priority": "low",
+        "concurrency": 5,
+        "jobs": [
+          "Calculate user stats",
+          "Generate reports",
+          "Update trending content",
+          "Compute recommendations"
+        ]
+      },
+      
+      "cleanup": {
+        "priority": "low",
+        "concurrency": 2,
+        "jobs": [
+          "Delete old temporary files",
+          "Archive old data",
+          "Cleanup expired sessions"
+        ]
+      }
+    },
+    
+    "job_monitoring": {
+      "dashboard": "Bull Board | custom UI",
+      "metrics": [
+        "Jobs completed",
+        "Jobs failed",
+        "Average processing time",
+        "Queue depth"
+      ]
+    }
+  },
+
+  "background_jobs": {
+    "scheduled_jobs": {
+      "cleanup_expired_sessions": {
+        "schedule": "0 * * * *",
+        "description": "Every hour, delete expired sessions"
+      },
+      
+      "generate_daily_reports": {
+        "schedule": "0 2 * * *",
+        "description": "2 AM daily, generate analytics reports"
+      },
+      
+      "update_trending_content": {
+        "schedule": "*/15 * * * *",
+        "description": "Every 15 minutes, recalculate trending"
+      },
+      
+      "send_event_reminders": {
+        "schedule": "0 9 * * *",
+        "description": "9 AM daily, send event reminders"
+      },
+      
+      "backup_database": {
+        "schedule": "0 3 * * *",
+        "description": "3 AM daily, backup database"
+      },
+      
+      "cleanup_old_files": {
+        "schedule": "0 4 * * 0",
+        "description": "Weekly on Sunday at 4 AM"
+      }
+    }
+  },
+
+  "rate_limiting": {
+    "implementation": "Redis-based token bucket algorithm",
+    
+    "limits": {
+      "anonymous": {
+        "requests_per_minute": 20,
+        "requests_per_hour": 100
+      },
+      
+      "authenticated": {
+        "requests_per_minute": 60,
+        "requests_per_hour": 1000
+      },
+      
+      "premium": {
+        "requests_per_minute": 300,
+        "requests_per_hour": 10000
+      },
+      
+      "specific_endpoints": {
+        "video_upload": {
+          "limit": "10 per hour per user",
+          "reasoning": "Expensive operation"
+        },
+        "search": {
+          "limit": "100 per minute per user",
+          "reasoning": "Database intensive"
+        },
+        "login": {
+          "limit": "5 per 15 minutes per IP",
+          "reasoning": "Prevent brute force"
+        }
+      }
+    },
+    
+    "response_headers": {
+      "X-RateLimit-Limit": "100",
+      "X-RateLimit-Remaining": "95",
+      "X-RateLimit-Reset": "1702310400"
+    },
+    
+    "exceeded_response": {
+      "status": 429,
+      "body": {
+        "error": "Rate limit exceeded",
+        "retry_after": 60
+      }
+    }
+  },
+
+  "logging_system": {
+    "log_levels": ["ERROR", "WARN", "INFO", "DEBUG"],
+    
+    "log_types": {
+      "application_logs": {
+        "format": "JSON structured logs",
+        "includes": ["timestamp", "level", "message", "context", "trace_id"],
+        "provider": "Winston | Pino | Bunyan"
+      },
+      
+      "access_logs": {
+        "format": "Combined log format",
+        "includes": ["IP", "method", "path", "status", "response_time", "user_agent"],
+        "provider": "Morgan | nginx"
+      },
+      
+      "error_logs": {
+        "includes": ["error_message", "stack_trace", "user_id", "request_details"],
+        "alerting": "Send to Sentry | Datadog"
+      },
+      
+      "audit_logs": {
+        "tracks": ["User actions", "Admin actions", "Data modifications"],
+        "retention": "7 years for compliance"
+      }
+    },
+    
+    "log_aggregation": {
+      "provider": "ELK Stack | Datadog | CloudWatch Logs",
+      "retention": {
+        "hot": "7 days - searchable",
+        "warm": "30 days - archived",
+        "cold": "1 year - deep archive"
+      }
+    }
+  },
+
+  "security_systems": {
+    "content_security_policy": {
+      "directives": {
+        "default-src": "'self'",
+        "script-src": "'self' 'unsafe-inline' https://cdn.example.com",
+        "style-src": "'self' 'unsafe-inline'",
+        "img-src": "'self' data: https:",
+        "media-src": "'self' https://cdn.example.com",
+        "frame-src": "'none'",
+        "connect-src": "'self' https://api.example.com"
+      }
+    },
+    
+    "cors_configuration": {
+      "allowed_origins": ["https://app.example.com", "https://www.example.com"],
+      "allowed_methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      "allowed_headers": ["Content-Type", "Authorization"],
+      "max_age": 86400
+    },
+    
+    "input_validation": {
+      "sanitize_all_inputs": true,
+      "validate_types": true,
+      "max_string_length": 10000,
+      "reject_sql_patterns": true,
+      "escape_html": true
+    },
+    
+    "encryption": {
+      "data_at_rest": {
+        "database": "AES-256 encryption",
+        "file_storage": "Server-side encryption (SSE)"
+      },
+      "data_in_transit": {
+        "tls_version": "1.3",
+        "certificate": "Let's Encrypt | DigiCert"
+      },
+      "sensitive_fields": {
+        "pii": "Encrypt before storing",
+        "payment_info": "Tokenize via Stripe"
+      }
+    }
+  },
+
+  "disaster_recovery": {
+    "backup_strategy": {
+      "database": {
+        "full_backup": "Daily at 3 AM",
+        "incremental": "Every 6 hours",
+        "retention": "30 days",
+        "location": "Different region",
+        "testing": "Monthly restore test"
+      },
+      
+      "files": {
+        "versioning": "Enabled on S3",
+        "replication": "Cross-region replication",
+        "retention": "90 days"
+      }
+    },
+    
+    "failover_plan": {
+      "rto": "Recovery Time Objective: 1 hour",
+      "rpo": "Recovery Point Objective: 15 minutes",
+      "hot_standby": "Secondary database in different region",
+      "automated_failover": true
+    }
+  },
+
+  "performance_optimization": {
+    "database_optimization": {
+      "connection_pooling": {
+        "min": 5,
+        "max": 20,
+        "idle_timeout": 30000
+      },
+      
+      "query_optimization": [
+        "Use indexes on foreign keys",
+        "Avoid N+1 queries",
+        "Use database views for complex queries",
+        "Implement pagination",
+        "Cache expensive aggregations"
+      ],
+      
+      "read_replicas": {
+        "count": 2,
+        "usage": "Route read queries to replicas"
+      }
+    },
+    
+    "api_optimization": {
+      "response_compression": "gzip | brotli",
+      "pagination": "Cursor-based for large datasets",
+      "field_selection": "Allow clients to specify fields",
+      "batch_requests": "GraphQL or custom batching",
+      "etag_support": true
+    },
+    
+    "frontend_optimization": {
+      "code_splitting": "Lazy load routes and components",
+      "image_lazy_loading": true,
+      "prefetch_links": "Prefetch likely next pages",
+      "service_worker": "Cache static assets",
+      "bundle_optimization": "Tree shaking, minification"
+    }
+  }
+}
