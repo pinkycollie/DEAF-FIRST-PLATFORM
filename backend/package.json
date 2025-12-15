@@ -17,7 +17,7 @@
     "clean": "rm -rf node_modules dist"
   },
   "dependencies": {
-    "express": "^4.21.1",
+    "express": "^5.2.1",
     "cors": "^2.8.5",
     "helmet": "^8.0.0",
     "dotenv": "^16.4.5",
@@ -26,7 +26,7 @@
     "bcrypt": "^5.1.1"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.6",
     "@types/cors": "^2.8.17",
     "@types/node": "^22.10.2",
     "@types/pg": "^8.11.10",
