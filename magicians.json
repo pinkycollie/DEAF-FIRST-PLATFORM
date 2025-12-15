@@ -78,8 +78,7 @@
         "agent_id": "data_processor_001",
         "type": "internal",
         "status": "active",
-        "
-": {
+        "details": {
           "name": "Data Processing Agent",
           "description": "Cleans, transforms, and validates data",
           "triggers": ["file_uploaded", "data_import", "scheduled_etl"],
@@ -919,18 +918,17 @@
       
       "agent_communication": {
         "message_bus": "Redis Pub/Sub or RabbitMQ",
-        "protocols": {
-          "​​​​​​​​​​​​​​​​
-    "message_format": {
-      "sender_id": "agent_001",
-      "receiver_id": "agent_002",
-      "task_id": "uuid",
-      "action": "process_data",
-      "payload": {},
-      "timestamp": "ISO8601",
-      "priority": "low | normal | high | urgent"
-    }
-  },
+        "protocols": ["AMQP", "MQTT", "WebSocket"],
+        "message_format": {
+          "sender_id": "agent_001",
+          "receiver_id": "agent_002",
+          "task_id": "uuid",
+          "action": "process_data",
+          "payload": {},
+          "timestamp": "ISO8601",
+          "priority": "low | normal | high | urgent"
+        }
+      },
   
   "state_management": {
     "agent_state": {
@@ -1144,10 +1142,10 @@
   },
   
   "environment_variables": {
-    "OPENAI_API_KEY": "sk-...",
-    "ANTHROPIC_API_KEY": "sk-ant-...",
-    "DATABASE_URL": "postgresql://...",
-    "REDIS_URL": "redis://...",
+    "OPENAI_API_KEY": "YOUR_OPENAI_API_KEY_HERE",
+    "ANTHROPIC_API_KEY": "YOUR_ANTHROPIC_API_KEY_HERE",
+    "DATABASE_URL": "postgresql://user:password@host:port/database",
+    "REDIS_URL": "redis://user:password@host:port",
     "AGENT_CONCURRENCY": "10",
     "LOG_LEVEL": "INFO"
   },
@@ -1205,4 +1203,6 @@
     "hipaa": "If handling health data",
     "sox": "If public company"
   }
+}
+}
 }
