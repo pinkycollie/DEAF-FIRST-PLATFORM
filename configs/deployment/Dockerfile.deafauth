@@ -1,0 +1,24 @@
+# DeafAUTH Service Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy root and service package files
+COPY package*.json ./
+COPY services/deafauth/package*.json ./services/deafauth/
+
+# Install dependencies
+RUN npm ci
+
+# Copy service source
+COPY services/deafauth ./services/deafauth
+COPY tsconfig.json ./
+
+# Build service
+RUN npm run build --workspace=services/deafauth
+
+WORKDIR /app/services/deafauth
+
+EXPOSE 3002
+
+CMD ["node", "dist/index.js"]

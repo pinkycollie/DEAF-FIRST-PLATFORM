@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deaf-first-config
+  namespace: deaf-first
+data:
+  NODE_ENV: "production"
+  DATABASE_HOST: "postgres-service"
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: "deafirst"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"

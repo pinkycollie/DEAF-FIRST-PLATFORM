@@ -1,0 +1,24 @@
+# Backend Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy root and backend package files
+COPY package*.json ./
+COPY backend/package*.json ./backend/
+
+# Install dependencies
+RUN npm ci
+
+# Copy backend source
+COPY backend ./backend
+COPY tsconfig.json ./
+
+# Build backend
+RUN npm run build --workspace=backend
+
+WORKDIR /app/backend
+
+EXPOSE 3000
+
+CMD ["node", "dist/index.js"]
