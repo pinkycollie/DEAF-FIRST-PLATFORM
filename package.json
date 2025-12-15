@@ -34,13 +34,18 @@
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "npm run test:e2e --workspace=frontend",
     "lint": "npm run lint --workspaces --if-present",
+    "lint-staged": "lint-staged",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "npm run type-check --workspaces --if-present",
+    "prepare": "husky install",
     "clean": "rm -rf node_modules && npm run clean --workspaces --if-present"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "concurrently": "^9.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2"
   },

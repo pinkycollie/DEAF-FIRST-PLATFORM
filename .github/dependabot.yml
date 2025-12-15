@@ -1,0 +1,92 @@
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "pinkycollie"
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    versioning-strategy: increase
+
+  # Frontend workspace
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "frontend"
+
+  # Backend workspace
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "backend"
+
+  # Services workspaces
+  - package-ecosystem: "npm"
+    directory: "/services/deafauth"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "deafauth"
+
+  - package-ecosystem: "npm"
+    directory: "/services/pinksync"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "pinksync"
+
+  - package-ecosystem: "npm"
+    directory: "/services/fibonrose"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "fibonrose"
+
+  - package-ecosystem: "npm"
+    directory: "/services/accessibility-nodes"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "accessibility"
+
+  - package-ecosystem: "npm"
+    directory: "/ai"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ai"
+
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "github-actions"

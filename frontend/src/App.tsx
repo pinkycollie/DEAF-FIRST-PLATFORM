@@ -57,6 +57,16 @@ function App() {
     { icon: '🌐', title: 'Multi-language', description: 'International support' },
   ];
 
+  const architectureNodes = [
+    { id: 'frontend', name: 'Frontend', tech: 'React 18', color: '#667eea', layer: 1 },
+    { id: 'backend', name: 'Backend API', tech: 'Express', color: '#764ba2', layer: 2 },
+    { id: 'deafauth', name: 'DeafAUTH', tech: 'Auth Service', color: '#f093fb', layer: 3 },
+    { id: 'pinksync', name: 'PinkSync', tech: 'Real-time Sync', color: '#4facfe', layer: 3 },
+    { id: 'fibonrose', name: 'FibonRose', tech: 'Optimization', color: '#43e97b', layer: 3 },
+    { id: 'accessibility', name: 'A11Y Nodes', tech: 'Accessibility', color: '#fa709a', layer: 3 },
+    { id: 'ai', name: 'AI Services', tech: 'AI Workflows', color: '#fee140', layer: 3 },
+  ];
+
   const handleServiceClick = (serviceId: string) => {
     setSelectedService(selectedService === serviceId ? null : serviceId);
   };
@@ -143,6 +153,25 @@ function App() {
               <div className="stat-card">
                 <div className="stat-value">v2.0</div>
                 <div className="stat-label">Production Ready</div>
+              </div>
+            </div>
+
+            <div className="architecture-diagram">
+              <h2>System Architecture</h2>
+              <div className="architecture-visual">
+                {architectureNodes.map((node) => (
+                  <div
+                    key={node.id}
+                    className="architecture-node"
+                    style={{
+                      borderColor: node.color,
+                      '--node-color': node.color,
+                    } as React.CSSProperties}
+                  >
+                    <div className="node-name">{node.name}</div>
+                    <div className="node-tech">{node.tech}</div>
+                  </div>
+                ))}
               </div>
             </div>
 

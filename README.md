@@ -1,5 +1,13 @@
 # DEAF-FIRST Platform
 
+[![CI/CD Pipeline](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/ci.yml/badge.svg)](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/ci.yml)
+[![Security Scanning](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/security.yml/badge.svg)](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/security.yml)
+[![Deploy to GitHub Pages](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/deploy.yml/badge.svg)](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
+[![Accessibility](https://img.shields.io/badge/WCAG-2.1%20AAA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
+
 A deaf-first SaaS ecosystem with AI-powered workflows and comprehensive accessibility features.
 
 🌐 **[View Live Demo on GitHub Pages](https://pinkycollie.github.io/DEAF-FIRST-PLATFORM/)**
@@ -9,6 +17,27 @@ A deaf-first SaaS ecosystem with AI-powered workflows and comprehensive accessib
 The DEAF-FIRST Platform is a monorepo containing multiple services designed with accessibility as the primary focus. It includes authentication, real-time synchronization, AI workflows, and specialized accessibility nodes.
 
 The platform features a modern, cutting-edge showcase interface that demonstrates all services and capabilities. See [GITHUB-PAGES-SETUP.md](./GITHUB-PAGES-SETUP.md) for deployment details.
+
+### 🎯 Key Features
+
+- **♿ Accessibility First**: WCAG 2.1 AAA compliant design throughout
+- **🔐 Secure Authentication**: JWT-based auth with DeafAUTH service
+- **🔄 Real-time Sync**: WebSocket-based synchronization with PinkSync
+- **📊 AI-Powered**: OpenAI integration for intelligent workflows
+- **🏗️ Microservices Architecture**: Independent, scalable services
+- **🚀 CI/CD Pipeline**: Automated testing, security scans, and deployment
+- **🐳 Docker Ready**: Full containerization support
+- **☁️ Infrastructure as Code**: Terraform templates included
+
+### 📚 Documentation
+
+- **[Architecture](./ARCHITECTURE.md)** - Detailed system architecture and design
+- **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute to this project
+- **[Quick Start](./QUICKSTART.md)** - Get up and running quickly
+- **[GitHub Pages Setup](./GITHUB-PAGES-SETUP.md)** - Deploy the showcase site
+- **[Webhook API](./WEBHOOK-API.md)** - Webhook system documentation
+- **[MCP Servers](./MCP-SERVERS.md)** - Model Context Protocol integration
+- **[Security](./SECURITY.md)** - Security policies and reporting
 
 ## Architecture
 
@@ -229,13 +258,25 @@ XANO_WEBHOOK_SECRET=your-xano-webhook-secret
 
 ## Contributing
 
-We welcome contributions! Please read our contributing guidelines before submitting PRs.
+We welcome contributions! Please read our [CONTRIBUTING.md](./CONTRIBUTING.md) guide before submitting PRs.
+
+### Quick Contribution Steps
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes following our [code standards](./CONTRIBUTING.md#code-standards)
+4. Run tests and linting (`npm run lint && npm run test`)
+5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+6. Push to your branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+### Development Guidelines
+
+- Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification
+- Maintain WCAG 2.1 AAA accessibility compliance
+- Write tests for new features
+- Update documentation as needed
+- Ensure all CI checks pass
 
 ## License
 
