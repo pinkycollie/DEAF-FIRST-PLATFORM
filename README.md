@@ -253,7 +253,6 @@ OPENAI_API_KEY=your-openai-key
 
 # Webhook Configuration
 WEBHOOK_SECRET=your-webhook-secret-key-here
-XANO_WEBHOOK_SECRET=your-xano-webhook-secret
 ```
 
 ## Contributing
