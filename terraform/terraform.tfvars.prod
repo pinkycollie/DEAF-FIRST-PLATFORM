@@ -1,12 +1,11 @@
 # ============================================
-# Terraform Variables Example File
-# Copy this to terraform.tfvars and customize
+# Production Environment Variables
 # ============================================
 
-# Core Project Configuration
-project_id   = "your-gcp-project-id"
+# Core Configuration
+project_id   = "deaf-first-production"
 project_name = "deaf-first"
-environment  = "development"
+environment  = "production"
 
 # Region Configuration
 region = "us-central1"
@@ -23,22 +22,22 @@ subnet_cidrs = {
   data    = "10.0.3.0/24"
 }
 
-# Database Configuration
-postgres_tier                    = "db-f1-micro"
-postgres_disk_size               = 10
+# Database Configuration - Production Tier
+postgres_tier                    = "db-n1-standard-2"
+postgres_disk_size               = 100
 postgres_backup_enabled          = true
-postgres_backup_retention_days   = 7
+postgres_backup_retention_days   = 30
 bigquery_dataset_location        = "US"
 
-# Cloud Run Configuration
-cloud_run_max_instances = 10
-cloud_run_min_instances = 0
-cloud_run_cpu           = "1"
-cloud_run_memory        = "512Mi"
+# Cloud Run Configuration - High availability for production
+cloud_run_max_instances = 20
+cloud_run_min_instances = 2  # Always maintain minimum instances
+cloud_run_cpu           = "2"
+cloud_run_memory        = "1Gi"
 
 # Cloud Functions Configuration
 cloud_function_runtime = "nodejs20"
-cloud_function_memory  = 256
+cloud_function_memory  = 512  # More memory for production
 
 # Storage Configuration
 storage_location            = "US"
@@ -47,12 +46,12 @@ storage_lifecycle_age_days  = 90
 
 # CDN Configuration
 cdn_enabled       = true
-cdn_cache_max_age = 3600
+cdn_cache_max_age = 7200  # Longer cache for production
 
 # Monitoring and Budget Configuration
-budget_amount           = 100
+budget_amount           = 1000  # Higher budget for production
 budget_alert_threshold  = [0.5, 0.75, 0.9, 1.0]
-alert_emails            = ["architect@360magicians.com"]
+alert_emails            = ["architect@360magicians.com", "alerts@360magicians.com"]
 
 # Accessibility Features
 enable_sign_language_api  = true
@@ -68,11 +67,7 @@ cloud_armor_enabled = true
 allowed_ip_ranges   = ["0.0.0.0/0"]
 
 # Pub/Sub Configuration
-pubsub_message_retention_duration = "604800s"
+pubsub_message_retention_duration = "604800s"  # 7 days
 
 # KMS Configuration
-kms_key_rotation_period = "7776000s"
-
-# Billing Account (required for budget alerts)
-# billing_account_id = "XXXXXX-XXXXXX-XXXXXX"
-
+kms_key_rotation_period = "7776000s"  # 90 days
