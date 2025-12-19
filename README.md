@@ -28,10 +28,13 @@ The platform features a modern, cutting-edge showcase interface that demonstrate
 - **🚀 CI/CD Pipeline**: Automated testing, security scans, and deployment
 - **🐳 Docker Ready**: Full containerization support
 - **☁️ Infrastructure as Code**: Terraform templates included
+- **🤖 Autonomous Evolution**: RAG-based system powered by Vertex AI on GCP
+- **🛡️ Deployment Gates**: Infrastructure completion checks prevent premature deployment
 
 ### 📚 Documentation
 
 - **[Architecture](./ARCHITECTURE.md)** - Detailed system architecture and design
+- **[Infrastructure Completion](./INFRASTRUCTURE-COMPLETION.md)** - Infrastructure readiness requirements
 - **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute to this project
 - **[Quick Start](./QUICKSTART.md)** - Get up and running quickly
 - **[GitHub Pages Setup](./GITHUB-PAGES-SETUP.md)** - Deploy the showcase site
@@ -45,11 +48,21 @@ This is a monorepo managed with npm workspaces containing:
 
 - **frontend**: React-based accessible user interface
 - **backend**: Express API server
-- **services/deafauth**: DeafAUTH authentication service with MCP server support
-- **services/pinksync**: Real-time synchronization service
-- **services/fibonrose**: Mathematical optimization engine
+- **services/deafauth**: DeafAUTH authentication service with MCP server support (`/auth`)
+- **services/pinksync**: Real-time synchronization service (`/sync`)
+- **services/fibonrose**: Mathematical optimization engine (`/trust`)
 - **services/accessibility-nodes**: Modular accessibility features
 - **ai**: AI services for deaf-first workflows
+
+### Core Official Services
+
+The platform requires three official core services to be fully configured before deployment:
+
+1. **DeafAUTH** (`/auth`) - Authentication and user management
+2. **PinkSync** (`/sync`) - Real-time synchronization
+3. **FibonRose** (`/trust`) - Trust scoring and optimization engine
+
+**⚠️ Important**: No code will be pushed to production until the full infrastructure is completed and configured. See [Infrastructure Completion](./INFRASTRUCTURE-COMPLETION.md) for details.
 
 ## Prerequisites
 
@@ -253,7 +266,43 @@ OPENAI_API_KEY=your-openai-key
 
 # Webhook Configuration
 WEBHOOK_SECRET=your-webhook-secret-key-here
+
+# GCP Configuration (for Vertex AI and autonomous features)
+GCP_PROJECT_ID=your-project-id
+GCP_REGION=us-central1
+VERTEX_AI_ENABLED=true
 ```
+
+## Autonomous Platform Evolution
+
+The DEAF-FIRST Platform is designed to evolve autonomously based on feedback from the deaf community:
+
+### RAG (Retrieval-Augmented Generation) System
+
+The platform uses Vertex AI on GCP to process community feedback and proposals:
+
+- **Vector Store**: Vertex AI Matching Engine for semantic search
+- **Embedding Model**: textembedding-gecko for context understanding
+- **Generation Model**: Gemini Pro for proposal generation
+- **Community Integration**: Automatic processing of feedback and suggestions
+
+### Evolution Workflow
+
+1. **Collect Feedback**: Continuous collection from deaf community
+2. **Process with RAG**: Vertex AI analyzes feedback with historical context
+3. **Generate Proposals**: AI creates improvement proposals
+4. **Community Review**: Proposals are reviewed by the community
+5. **Automatic Implementation**: Approved changes are implemented autonomously
+
+### Distributed System
+
+The platform operates as a distributed system:
+- **Microservices**: DeafAUTH, PinkSync, FibonRose
+- **Orchestration**: Kubernetes on GKE
+- **Messaging**: Cloud Pub/Sub for event-driven communication
+- **AI Integration**: Vertex AI for intelligent decision-making
+
+For more details, see [Infrastructure Completion](./INFRASTRUCTURE-COMPLETION.md).
 
 ## Contributing
 
