@@ -1,0 +1,105 @@
+# Cloud Build configuration for main branch builds
+# Builds and tests the application on commits to main
+
+steps:
+  # Install dependencies
+  - name: 'node:20'
+    id: 'install-dependencies'
+    entrypoint: 'npm'
+    args: ['ci']
+    
+  # Run tests
+  - name: 'node:20'
+    id: 'test'
+    entrypoint: 'npm'
+    args: ['run', 'test']
+    env:
+      - 'NODE_ENV=test'
+    waitFor: ['install-dependencies']
+    
+  # Build all services
+  - name: 'node:20'
+    id: 'build'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+    waitFor: ['test']
+    
+  # Build Docker images for each service
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-deafauth'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-deafauth:${SHORT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-deafauth:latest'
+      - '-f'
+      - 'services/deafauth/Dockerfile'
+      - '.'
+    waitFor: ['build']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-pinksync'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-pinksync:${SHORT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-pinksync:latest'
+      - '-f'
+      - 'services/pinksync/Dockerfile'
+      - '.'
+    waitFor: ['build']
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-fibonrose'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-fibonrose:${SHORT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-fibonrose:latest'
+      - '-f'
+      - 'services/fibonrose/Dockerfile'
+      - '.'
+    waitFor: ['build']
+  
+  # Push images to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-images'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-deafauth'
+    waitFor: ['build-deafauth', 'build-pinksync', 'build-fibonrose']
+
+# Store build artifacts
+artifacts:
+  objects:
+    location: 'gs://${PROJECT_ID}-build-artifacts'
+    paths:
+      - 'frontend/dist/**/*'
+      - 'backend/dist/**/*'
+
+# Build images
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-deafauth:${SHORT_SHA}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-pinksync:${SHORT_SHA}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-fibonrose:${SHORT_SHA}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-deafauth:latest'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-pinksync:latest'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-fibonrose:latest'
+
+# Build timeout
+timeout: '1800s'
+
+# Logging options
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'N1_HIGHCPU_8'
+  
+# Substitutions
+substitutions:
+  _REGION: 'us-central1'
+  _ARTIFACT_REGISTRY: 'deaf-first-development-containers'
+  _PROJECT_NAME: 'deaf-first-development'

@@ -1,3 +1,10 @@
+# ============================================
+# Terraform Variables Example File
+# Copy this to terraform.tfvars and customize
+# ============================================
+
+# Core Project Configuration
+project_id   = "your-gcp-project-id"
 # Example Terraform variables file for GCP
 # Copy this to terraform.tfvars and customize with your values
 
@@ -7,7 +14,75 @@ environment  = "dev"
 region       = "us-central1"
 zone         = "us-central1-a"
 project_name = "deaf-first"
+environment  = "development"
 
+# Region Configuration
+region = "us-central1"
+zones  = ["us-central1-a", "us-central1-b", "us-central1-c"]
+
+# IAM Configuration
+architect_email = "architect@360magicians.com"
+
+# Networking Configuration
+vpc_cidr = "10.0.0.0/16"
+subnet_cidrs = {
+  public  = "10.0.1.0/24"
+  private = "10.0.2.0/24"
+  data    = "10.0.3.0/24"
+}
+
+# Database Configuration
+postgres_tier                    = "db-f1-micro"
+postgres_disk_size               = 10
+postgres_backup_enabled          = true
+postgres_backup_retention_days   = 7
+bigquery_dataset_location        = "US"
+
+# Cloud Run Configuration
+cloud_run_max_instances = 10
+cloud_run_min_instances = 0
+cloud_run_cpu           = "1"
+cloud_run_memory        = "512Mi"
+
+# Cloud Functions Configuration
+cloud_function_runtime = "nodejs20"
+cloud_function_memory  = 256
+
+# Storage Configuration
+storage_location            = "US"
+storage_versioning_enabled  = true
+storage_lifecycle_age_days  = 90
+
+# CDN Configuration
+cdn_enabled       = true
+cdn_cache_max_age = 3600
+
+# Monitoring and Budget Configuration
+budget_amount           = 100
+budget_alert_threshold  = [0.5, 0.75, 0.9, 1.0]
+alert_emails            = ["architect@360magicians.com"]
+
+# Accessibility Features
+enable_sign_language_api  = true
+enable_visual_processing  = true
+deaf_web_assets_bucket    = "deaf-web-assets"
+
+# Vertex AI Configuration
+vertex_ai_region = "us-central1"
+enable_vertex_ai = true
+
+# Cloud Armor Configuration
+cloud_armor_enabled = true
+allowed_ip_ranges   = ["0.0.0.0/0"]
+
+# Pub/Sub Configuration
+pubsub_message_retention_duration = "604800s"
+
+# KMS Configuration
+kms_key_rotation_period = "7776000s"
+
+# Billing Account (required for budget alerts)
+# billing_account_id = "XXXXXX-XXXXXX-XXXXXX"
 # Organization Configuration
 organization_email = "architect@360magician.com"
 

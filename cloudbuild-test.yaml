@@ -1,0 +1,77 @@
+# Cloud Build configuration for PR validation and testing
+# This file is used by Cloud Build triggers for the PinkFlow testing container
+
+steps:
+  # Install dependencies
+  - name: 'node:20'
+    id: 'install-dependencies'
+    entrypoint: 'npm'
+    args: ['ci']
+    
+  # Run linting
+  - name: 'node:20'
+    id: 'lint'
+    entrypoint: 'npm'
+    args: ['run', 'lint']
+    waitFor: ['install-dependencies']
+    
+  # Run type checking
+  - name: 'node:20'
+    id: 'type-check'
+    entrypoint: 'npm'
+    args: ['run', 'type-check']
+    waitFor: ['install-dependencies']
+    
+  # Run unit tests
+  - name: 'node:20'
+    id: 'test'
+    entrypoint: 'npm'
+    args: ['run', 'test']
+    env:
+      - 'NODE_ENV=test'
+    waitFor: ['install-dependencies']
+    
+  # Build all services
+  - name: 'node:20'
+    id: 'build'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+    waitFor: ['lint', 'type-check', 'test']
+    
+  # Validate API contracts
+  - name: 'node:20'
+    id: 'validate-api'
+    entrypoint: 'npm'
+    args: ['run', 'test:api']
+    env:
+      - 'NODE_ENV=test'
+    waitFor: ['build']
+    
+  # Run accessibility tests
+  - name: 'node:20'
+    id: 'accessibility-test'
+    entrypoint: 'npm'
+    args: ['run', 'test:accessibility']
+    env:
+      - 'NODE_ENV=test'
+    waitFor: ['build']
+
+# Store build artifacts
+artifacts:
+  objects:
+    location: 'gs://${PROJECT_ID}-test-results'
+    paths:
+      - 'test-results/**/*'
+      - 'coverage/**/*'
+
+# Build timeout
+timeout: '1200s'
+
+# Logging options
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'N1_HIGHCPU_8'
+  
+# Substitutions
+substitutions:
+  _ENVIRONMENT: 'test'
