@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MBTQ Deaf-First Platform - API Documentation</title>
+  <meta name="description" content="Complete API documentation for the MBTQ Deaf-First Platform">
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦻</text></svg>">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #e0e0e0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    h1 {
+      font-size: 3rem;
+      margin: 0 0 16px 0;
+      background: linear-gradient(90deg, #a5d6ff, #ff7eb3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      font-size: 1.25rem;
+      color: #a0a0a0;
+      margin: 0;
+    }
+    
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    
+    .service-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 32px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .service-card:hover,
+    .service-card:focus {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(165, 214, 255, 0.3);
+    }
+    
+    .service-card:focus {
+      outline: 3px solid #0066cc;
+      outline-offset: 2px;
+    }
+    
+    .service-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    
+    .service-name {
+      font-size: 1.5rem;
+      margin: 0 0 8px 0;
+      color: #a5d6ff;
+    }
+    
+    .service-description {
+      color: #a0a0a0;
+      margin: 0 0 16px 0;
+      line-height: 1.6;
+    }
+    
+    .service-endpoints {
+      font-size: 0.875rem;
+      color: #ff7eb3;
+    }
+    
+    .features {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 40px;
+    }
+    
+    .features h2 {
+      margin: 0 0 24px 0;
+      color: #a5d6ff;
+    }
+    
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .features-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .features-list li::before {
+      content: "✓";
+      color: #4ade80;
+      font-weight: bold;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #606060;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    footer a {
+      color: #a5d6ff;
+    }
+    
+    @media (prefers-contrast: high) {
+      body {
+        background: #000;
+      }
+      .service-card {
+        border-color: #fff;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🦻 MBTQ Deaf-First Platform</h1>
+      <p class="subtitle">Complete API Documentation for All Services</p>
+    </header>
+    
+    <main>
+      <section class="services-grid" aria-label="Available API services">
+        <a href="deafauth.html" class="service-card">
+          <div class="service-icon">🔐</div>
+          <h2 class="service-name">DeafAUTH</h2>
+          <p class="service-description">Identity Cortex - Secure authentication system designed with deaf-first principles.</p>
+          <span class="service-endpoints">4 endpoints</span>
+        </a>
+        
+        <a href="pinksync.html" class="service-card">
+          <div class="service-icon">💗</div>
+          <h2 class="service-name">PinkSync</h2>
+          <p class="service-description">Accessibility Engine - Real-time accessibility preference synchronization.</p>
+          <span class="service-endpoints">3 endpoints</span>
+        </a>
+        
+        <a href="fibonrose.html" class="service-card">
+          <div class="service-icon">⛓️</div>
+          <h2 class="service-name">Fibonrose</h2>
+          <p class="service-description">Trust & Blockchain - Decentralized trust verification and recording.</p>
+          <span class="service-endpoints">3 endpoints</span>
+        </a>
+        
+        <a href="magicians.html" class="service-card">
+          <div class="service-icon">🧙</div>
+          <h2 class="service-name">360Magicians</h2>
+          <p class="service-description">AI Agent Platform - Comprehensive AI agents for automation and assistance.</p>
+          <span class="service-endpoints">62 endpoints</span>
+        </a>
+        
+        <a href="dao.html" class="service-card">
+          <div class="service-icon">🏛️</div>
+          <h2 class="service-name">DAO</h2>
+          <p class="service-description">Governance - Decentralized governance and community management.</p>
+          <span class="service-endpoints">3 endpoints</span>
+        </a>
+      </section>
+      
+      <section class="features">
+        <h2>Platform Features</h2>
+        <ul class="features-list">
+          <li>OpenAPI 3.1.0 specifications</li>
+          <li>Unified JWT authentication</li>
+          <li>Real-time accessibility sync</li>
+          <li>AI-powered assistance</li>
+          <li>Blockchain verification</li>
+          <li>Decentralized governance</li>
+          <li>TypeScript & Python SDKs</li>
+          <li>Comprehensive testing</li>
+        </ul>
+      </section>
+    </main>
+    
+    <footer>
+      <p>
+        <a href="../README.md">README</a> · 
+        <a href="../SDK.md">SDK Guide</a> · 
+        <a href="ARCHITECTURE.md">Architecture</a> · 
+        <a href="FETCH-API-EXAMPLES.md">Fetch API Examples</a>
+      </p>
+      <p>MBTQ Universe - Deaf-First Platform</p>
+    </footer>
+  </div>
+</body>
+</html>
