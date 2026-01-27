@@ -1,88 +1,121 @@
 terraform {
   required_version = ">= 1.5.0"
-  
+
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 5.0"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
       version = "~> 5.0"
     }
   }
-}
-
-# Example AWS configuration - adjust for your cloud provider
-provider "aws" {
-  region = var.region
   
-  default_tags {
-    tags = {
-      Project     = "DEAF-FIRST-Platform"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
+  backend "gcs" {
+    # Backend configuration is provided via backend config file
+    # terraform init -backend-config=backend-${env}.tfbackend
+      version = "~> 5.0"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 5.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.5"
     }
   }
+
+# Google Cloud Provider Configuration
+provider "google" {
+  project = var.project_id
+  region  = var.region
 }
 
-# Networking Module
-module "networking" {
-  source = "./modules/networking"
-  
-  environment        = var.environment
-  vpc_cidr          = var.vpc_cidr
-  availability_zones = var.availability_zones
-  project_name      = var.project_name
+provider "google-beta" {
+  # Backend configuration for state storage in GCS
+  # Uncomment and configure after creating the GCS bucket
+  # backend "gcs" {
+  #   bucket = "deaf-first-terraform-state"
+  #   prefix = "terraform/state"
+  # }
 }
 
-# Database Module
-module "database" {
-  source = "./modules/database"
-  
-  environment              = var.environment
-  vpc_id                  = module.networking.vpc_id
-  database_subnet_ids     = module.networking.database_subnet_ids
-  postgres_instance_class = var.postgres_instance_class
-  redis_node_type         = var.redis_node_type
-  enable_backups          = var.enable_backups
-  backup_retention_days   = var.backup_retention_days
+# GCP Provider Configuration
+provider "google" {
+  project = var.project_id
+  region  = var.region
 }
 
-# Compute Module
-module "compute" {
-  source = "./modules/compute"
-  
-  environment         = var.environment
-  vpc_id             = module.networking.vpc_id
-  public_subnet_ids  = module.networking.public_subnet_ids
-  private_subnet_ids = module.networking.private_subnet_ids
-  
-  services = {
-    frontend = {
-      cpu    = 256
-      memory = 512
-      port   = 80
-    }
-    backend = {
-      cpu    = 512
-      memory = 1024
-      port   = 3000
-    }
-    deafauth = {
-      cpu    = 256
-      memory = 512
-      port   = 3002
-    }
-    pinksync = {
-      cpu    = 256
-      memory = 512
-      port   = 3003
-    }
+# Local variables for common tags and naming
+locals {
+  common_labels = {
+    project     = "deaf-first-platform"
+    environment = var.environment
+    managed_by  = "terraform"
+    architect   = "360magicians"
   }
+  
+  name_prefix = "${var.project_name}-${var.environment}"
 }
 
-# Storage Module
-module "storage" {
-  source = "./modules/storage"
-  
-  environment        = var.environment
-  enable_versioning  = var.enable_storage_versioning
-  lifecycle_days     = var.storage_lifecycle_days
+# Enable Required GCP APIs
+provider "google-beta" {
+  project = var.project_id
+  region  = var.region
 }
+
+# Enable required GCP APIs
+resource "google_project_service" "required_apis" {
+  for_each = toset([
+    "compute.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "servicenetworking.googleapis.com",
+    "sqladmin.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "run.googleapis.com",
+    "firebase.googleapis.com",
+    "firestore.googleapis.com",
+    "pubsub.googleapis.com",
+    "storage.googleapis.com",
+    "cloudkms.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "bigquery.googleapis.com",
+    "aiplatform.googleapis.com",
+    "secretmanager.googleapis.com",
+    "cloudscheduler.googleapis.com",
+    "vpcaccess.googleapis.com"
+  ])
+  
+  project = var.project_id
+  service = each.key
+  
+  disable_dependent_services = false
+  disable_on_destroy        = false
+    "iam.googleapis.com",
+    "sqladmin.googleapis.com",
+    "firebase.googleapis.com",
+    "firestore.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "pubsub.googleapis.com",
+    "run.googleapis.com",
+    "bigquery.googleapis.com",
+    "aiplatform.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+    "compute.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "secretmanager.googleapis.com",
+    "notebooks.googleapis.com",
+    "billingbudgets.googleapis.com"
+  ])
+
+  project            = var.project_id
+  service            = each.key
+  disable_on_destroy = false
+}
+

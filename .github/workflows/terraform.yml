@@ -1,0 +1,334 @@
+name: Terraform Infrastructure Deployment
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+env:
+  TERRAFORM_VERSION: '1.5.0'
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [development, staging]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Terraform Format Check
+        id: fmt
+        run: |
+          cd terraform
+          terraform fmt -check -recursive
+        continue-on-error: true
+      
+      - name: Terraform Init
+        id: init
+        run: |
+          cd terraform
+          terraform init -backend-config=backend-${{ matrix.environment }}.tfbackend
+      
+      - name: Terraform Validate
+        id: validate
+        run: |
+          cd terraform
+          terraform validate -no-color
+      
+      - name: Terraform Plan
+        id: plan
+        run: |
+          cd terraform
+          terraform plan \
+            -var-file=terraform.tfvars.${{ matrix.environment }} \
+            -out=tfplan-${{ matrix.environment }} \
+            -no-color
+        continue-on-error: true
+      
+      - name: Comment PR with Plan
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            
+            <details><summary>Show Plan for ${{ matrix.environment }}</summary>
+            
+            \`\`\`terraform
+            ${{ steps.plan.outputs.stdout }}
+            \`\`\`
+            
+            </details>
+            
+            *Environment:* \`${{ matrix.environment }}\`
+            *Pusher:* @${{ github.actor }}
+            *Action:* \`${{ github.event_name }}\``;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+      
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ matrix.environment }}
+          path: terraform/tfplan-${{ matrix.environment }}
+          retention-days: 5
+
+  terraform-apply-dev:
+    name: Apply to Development
+    runs-on: ubuntu-latest
+    needs: terraform-plan
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: development
+      url: https://console.cloud.google.com/home/dashboard?project=deaf-first-dev
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init -backend-config=backend-development.tfbackend
+      
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-development
+          path: terraform
+      
+      - name: Terraform Apply
+        run: |
+          cd terraform
+          terraform apply -auto-approve tfplan-development
+      
+      - name: Terraform Output
+        id: output
+        run: |
+          cd terraform
+          terraform output -json > outputs.json
+          cat outputs.json
+      
+      - name: Upload Outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-outputs-development
+          path: terraform/outputs.json
+          retention-days: 30
+
+  terraform-apply-staging:
+    name: Apply to Staging
+    runs-on: ubuntu-latest
+    needs: terraform-plan
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://console.cloud.google.com/home/dashboard?project=deaf-first-staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS_STAGING }}
+      
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init -backend-config=backend-staging.tfbackend
+      
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-staging
+          path: terraform
+      
+      - name: Terraform Apply
+        run: |
+          cd terraform
+          terraform apply -auto-approve tfplan-staging
+      
+      - name: Terraform Output
+        id: output
+        run: |
+          cd terraform
+          terraform output -json > outputs.json
+          cat outputs.json
+      
+      - name: Upload Outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-outputs-staging
+          path: terraform/outputs.json
+          retention-days: 30
+
+  terraform-apply-production:
+    name: Apply to Production
+    runs-on: ubuntu-latest
+    needs: terraform-apply-staging
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://console.cloud.google.com/home/dashboard?project=deaf-first-production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS_PRODUCTION }}
+      
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init -backend-config=backend-prod.tfbackend
+      
+      - name: Terraform Plan
+        run: |
+          cd terraform
+          terraform plan \
+            -var-file=terraform.tfvars.prod \
+            -out=tfplan-production \
+            -no-color
+      
+      - name: Terraform Apply
+        run: |
+          cd terraform
+          terraform apply -auto-approve tfplan-production
+      
+      - name: Terraform Output
+        id: output
+        run: |
+          cd terraform
+          terraform output -json > outputs.json
+          cat outputs.json
+      
+      - name: Upload Outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-outputs-production
+          path: terraform/outputs.json
+          retention-days: 90
+      
+      - name: Create Deployment Summary
+        run: |
+          cd terraform
+          echo "## 🎉 Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Deployment Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** Production" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deployed by:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Timestamp:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Infrastructure Outputs" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          cat outputs.json >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Trivy security scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: 'terraform'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      
+      - name: Upload Trivy results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+      
+      - name: Run Checkov security scan
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: terraform
+          framework: terraform
+          output_format: cli
+          soft_fail: true
