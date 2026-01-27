@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import webhookRoutes from './routes/webhook.routes';
+import incomingWebhookRoutes from './routes/incoming-webhook.routes';
 
 dotenv.config();
 
@@ -38,10 +40,16 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+// Webhook routes
+app.use('/api/webhooks', webhookRoutes);
+app.use('/api/incoming-webhooks', incomingWebhookRoutes);
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Backend API running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`Webhook API: http://localhost:${PORT}/api/webhooks`);
+  console.log(`Incoming Webhooks: http://localhost:${PORT}/api/incoming-webhooks`);
 });
 
 export default app;

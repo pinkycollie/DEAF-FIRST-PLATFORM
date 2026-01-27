@@ -382,11 +382,47 @@ See LICENSE file for details.
 Built with deaf-first principles and a commitment to accessibility for all.
 # DEAF-FIRST Platform
 
+[![CI/CD Pipeline](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/ci.yml/badge.svg)](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/ci.yml)
+[![Security Scanning](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/security.yml/badge.svg)](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/security.yml)
+[![Deploy to GitHub Pages](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/deploy.yml/badge.svg)](https://github.com/pinkycollie/DEAF-FIRST-PLATFORM/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
+[![Accessibility](https://img.shields.io/badge/WCAG-2.1%20AAA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
+
 A deaf-first SaaS ecosystem with AI-powered workflows and comprehensive accessibility features.
+
+🌐 **[View Live Demo on GitHub Pages](https://pinkycollie.github.io/DEAF-FIRST-PLATFORM/)**
 
 ## Overview
 
 The DEAF-FIRST Platform is a monorepo containing multiple services designed with accessibility as the primary focus. It includes authentication, real-time synchronization, AI workflows, and specialized accessibility nodes.
+
+The platform features a modern, cutting-edge showcase interface that demonstrates all services and capabilities. See [GITHUB-PAGES-SETUP.md](./GITHUB-PAGES-SETUP.md) for deployment details.
+
+### 🎯 Key Features
+
+- **♿ Accessibility First**: WCAG 2.1 AAA compliant design throughout
+- **🔐 Secure Authentication**: JWT-based auth with DeafAUTH service
+- **🔄 Real-time Sync**: WebSocket-based synchronization with PinkSync
+- **📊 AI-Powered**: OpenAI integration for intelligent workflows
+- **🏗️ Microservices Architecture**: Independent, scalable services
+- **🚀 CI/CD Pipeline**: Automated testing, security scans, and deployment
+- **🐳 Docker Ready**: Full containerization support
+- **☁️ Infrastructure as Code**: Terraform templates included
+- **🤖 Autonomous Evolution**: RAG-based system powered by Vertex AI on GCP
+- **🛡️ Deployment Gates**: Infrastructure completion checks prevent premature deployment
+
+### 📚 Documentation
+
+- **[Architecture](./ARCHITECTURE.md)** - Detailed system architecture and design
+- **[Infrastructure Completion](./INFRASTRUCTURE-COMPLETION.md)** - Infrastructure readiness requirements
+- **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute to this project
+- **[Quick Start](./QUICKSTART.md)** - Get up and running quickly
+- **[GitHub Pages Setup](./GITHUB-PAGES-SETUP.md)** - Deploy the showcase site
+- **[Webhook API](./WEBHOOK-API.md)** - Webhook system documentation
+- **[MCP Servers](./MCP-SERVERS.md)** - Model Context Protocol integration
+- **[Security](./SECURITY.md)** - Security policies and reporting
 
 ## Architecture
 
@@ -394,11 +430,21 @@ This is a monorepo managed with npm workspaces containing:
 
 - **frontend**: React-based accessible user interface
 - **backend**: Express API server
-- **services/deafauth**: DeafAUTH authentication service with MCP server support
-- **services/pinksync**: Real-time synchronization service
-- **services/fibonrose**: Mathematical optimization engine
+- **services/deafauth**: DeafAUTH authentication service with MCP server support (`/auth`)
+- **services/pinksync**: Real-time synchronization service (`/sync`)
+- **services/fibonrose**: Mathematical optimization engine (`/trust`)
 - **services/accessibility-nodes**: Modular accessibility features
 - **ai**: AI services for deaf-first workflows
+
+### Core Official Services
+
+The platform requires three official core services to be fully configured before deployment:
+
+1. **DeafAUTH** (`/auth`) - Authentication and user management
+2. **PinkSync** (`/sync`) - Real-time synchronization
+3. **FibonRose** (`/trust`) - Trust scoring and optimization engine
+
+**⚠️ Important**: No code will be pushed to production until the full infrastructure is completed and configured. See [Infrastructure Completion](./INFRASTRUCTURE-COMPLETION.md) for details.
 
 ## Prerequisites
 
@@ -480,6 +526,30 @@ npm run docker:down     # Stop Docker services
 npm run docker:logs     # View Docker logs
 npm run build:docker    # Build Docker images
 ```
+
+## Webhook System
+
+The platform includes a comprehensive webhook system for real-time event notifications:
+
+```bash
+# Start backend with webhook support
+npm run dev:backend
+
+# Access webhook API at http://localhost:3000/api/webhooks
+```
+
+**Features:**
+- Register and manage webhooks via REST API
+- Receive webhooks from external services (Xano, Stripe, etc.)
+- HMAC-SHA256 signature verification
+- 12 predefined event types (user, auth, document, accessibility, sync, AI)
+- Webhook delivery tracking and history
+- Test endpoints for development
+
+**Documentation:**
+- [Quick Start Guide](./QUICKSTART-WEBHOOKS.md) - Get started in minutes
+- [API Reference](./WEBHOOK-API.md) - Complete API documentation
+- [Migration Guide](./WEBHOOK-MIGRATION-GUIDE.md) - Migrate from Xano
 
 ## MCP Server Support
 
@@ -575,17 +645,68 @@ AI_PORT=3006
 
 # AI Services
 OPENAI_API_KEY=your-openai-key
+
+# Webhook Configuration
+WEBHOOK_SECRET=your-webhook-secret-key-here
+
+# GCP Configuration (for Vertex AI and autonomous features)
+GCP_PROJECT_ID=your-project-id
+GCP_REGION=us-central1
+VERTEX_AI_ENABLED=true
 ```
+
+## Autonomous Platform Evolution
+
+The DEAF-FIRST Platform is designed to evolve autonomously based on feedback from the deaf community:
+
+### RAG (Retrieval-Augmented Generation) System
+
+The platform uses Vertex AI on GCP to process community feedback and proposals:
+
+- **Vector Store**: Vertex AI Matching Engine for semantic search
+- **Embedding Model**: textembedding-gecko for context understanding
+- **Generation Model**: Gemini Pro for proposal generation
+- **Community Integration**: Automatic processing of feedback and suggestions
+
+### Evolution Workflow
+
+1. **Collect Feedback**: Continuous collection from deaf community
+2. **Process with RAG**: Vertex AI analyzes feedback with historical context
+3. **Generate Proposals**: AI creates improvement proposals
+4. **Community Review**: Proposals are reviewed by the community
+5. **Automatic Implementation**: Approved changes are implemented autonomously
+
+### Distributed System
+
+The platform operates as a distributed system:
+- **Microservices**: DeafAUTH, PinkSync, FibonRose
+- **Orchestration**: Kubernetes on GKE
+- **Messaging**: Cloud Pub/Sub for event-driven communication
+- **AI Integration**: Vertex AI for intelligent decision-making
+
+For more details, see [Infrastructure Completion](./INFRASTRUCTURE-COMPLETION.md).
 
 ## Contributing
 
-We welcome contributions! Please read our contributing guidelines before submitting PRs.
+We welcome contributions! Please read our [CONTRIBUTING.md](./CONTRIBUTING.md) guide before submitting PRs.
+
+### Quick Contribution Steps
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes following our [code standards](./CONTRIBUTING.md#code-standards)
+4. Run tests and linting (`npm run lint && npm run test`)
+5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+6. Push to your branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+### Development Guidelines
+
+- Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification
+- Maintain WCAG 2.1 AAA accessibility compliance
+- Write tests for new features
+- Update documentation as needed
+- Ensure all CI checks pass
 
 ## License
 

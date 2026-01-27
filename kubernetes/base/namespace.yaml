@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: deaf-first
+  labels:
+    name: deaf-first
+    app: deaf-first-platform

@@ -1,93 +1,188 @@
 version: '3.8'
 
 services:
+  # Database Services
   postgres:
     image: postgres:16-alpine
+    container_name: deaf-first-postgres
     environment:
       POSTGRES_USER: deafirst
       POSTGRES_PASSWORD: deafirst_password
       POSTGRES_DB: deafirst
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deafirst"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - deaf-first-network
 
   redis:
     image: redis:7-alpine
+    container_name: deaf-first-redis
+    command: redis-server --appendonly yes
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - deaf-first-network
 
+  # Backend Services
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ../../
+      dockerfile: configs/deployment/Dockerfile.backend
+    container_name: deaf-first-backend
     ports:
       - "3000:3000"
     environment:
+      - NODE_ENV=development
       - DATABASE_URL=postgresql://deafirst:deafirst_password@postgres:5432/deafirst
       - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET must be set}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:?WEBHOOK_SECRET must be set}
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../../backend:/app/backend
+      - /app/node_modules
+    networks:
+      - deaf-first-network
+    restart: unless-stopped
 
   deafauth:
     build:
-      context: .
-      dockerfile: Dockerfile.deafauth
+      context: ../../
+      dockerfile: configs/deployment/Dockerfile.deafauth
+    container_name: deaf-first-deafauth
     ports:
       - "3002:3002"
     environment:
+      - NODE_ENV=development
       - DEAFAUTH_DATABASE_URL=postgresql://deafirst:deafirst_password@postgres:5432/deafauth
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET must be set}
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../../services/deafauth:/app/services/deafauth
+      - /app/node_modules
+    networks:
+      - deaf-first-network
+    restart: unless-stopped
 
   pinksync:
     build:
-      context: .
-      dockerfile: Dockerfile.pinksync
+      context: ../../
+      dockerfile: configs/deployment/Dockerfile.pinksync
+    container_name: deaf-first-pinksync
     ports:
       - "3003:3003"
     environment:
+      - NODE_ENV=development
       - REDIS_URL=redis://redis:6379
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../../services/pinksync:/app/services/pinksync
+      - /app/node_modules
+    networks:
+      - deaf-first-network
+    restart: unless-stopped
 
   fibonrose:
     build:
-      context: .
-      dockerfile: Dockerfile.fibonrose
+      context: ../../
+      dockerfile: configs/deployment/Dockerfile.fibonrose
+    container_name: deaf-first-fibonrose
     ports:
       - "3004:3004"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ../../services/fibonrose:/app/services/fibonrose
+      - /app/node_modules
+    networks:
+      - deaf-first-network
+    restart: unless-stopped
 
   accessibility-nodes:
     build:
-      context: .
-      dockerfile: Dockerfile.a11y
+      context: ../../
+      dockerfile: configs/deployment/Dockerfile.a11y
+    container_name: deaf-first-a11y
     ports:
       - "3005:3005"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ../../services/accessibility-nodes:/app/services/accessibility-nodes
+      - /app/node_modules
+    networks:
+      - deaf-first-network
+    restart: unless-stopped
 
   ai:
     build:
-      context: .
-      dockerfile: Dockerfile.ai
+      context: ../../
+      dockerfile: configs/deployment/Dockerfile.ai
+    container_name: deaf-first-ai
     ports:
       - "3006:3006"
     environment:
+      - NODE_ENV=development
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ../../ai:/app/ai
+      - /app/node_modules
+    networks:
+      - deaf-first-network
+    restart: unless-stopped
 
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ../../
+      dockerfile: configs/deployment/Dockerfile.frontend
+    container_name: deaf-first-frontend
     ports:
       - "5173:5173"
     environment:
+      - NODE_ENV=development
       - VITE_API_URL=http://backend:3000
+      - VITE_WS_URL=ws://pinksync:3003
     depends_on:
       - backend
+    volumes:
+      - ../../frontend:/app/frontend
+      - /app/node_modules
+    networks:
+      - deaf-first-network
+    restart: unless-stopped
+
+networks:
+  deaf-first-network:
+    driver: bridge
+    name: deaf-first-network
 
 volumes:
   postgres_data:
+    name: deaf-first-postgres-data
   redis_data:
+    name: deaf-first-redis-data
+

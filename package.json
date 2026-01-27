@@ -36,15 +36,12 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "npm run test:e2e --workspace=frontend",
     "lint": "npm run lint --workspaces --if-present",
+    "lint-staged": "lint-staged",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "type-check": "npm run type-check --workspaces --if-present",
-    "clean": "rm -rf node_modules && npm run clean --workspaces --if-present",
-    "validate:openapi": "node scripts/validate-openapi.js",
-    "generate:sdk": "npm run generate:sdk:typescript && npm run generate:sdk:python",
-    "generate:sdk:typescript": "node scripts/generate-sdk.js typescript",
-    "generate:sdk:python": "node scripts/generate-sdk.js python",
-    "generate:docs": "node scripts/generate-html-docs.js",
-    "docs:serve": "npx serve docs/html"
+    "prepare": "husky install",
+    "clean": "rm -rf node_modules && npm run clean --workspaces --if-present"
   },
   "devDependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
@@ -52,8 +49,8 @@
     "@types/node": "^22.10.2",
     "axios": "^1.6.0",
     "concurrently": "^9.1.0",
-    "eslint": "^8.57.0",
-    "jest": "^29.7.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
     "yaml": "^2.3.4"

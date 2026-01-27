@@ -1,0 +1,3 @@
+# Backend configuration for Production environment
+bucket = "deaf-first-production-terraform-state"
+prefix = "terraform/state"
