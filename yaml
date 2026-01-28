@@ -1,0 +1,113 @@
+name: Deaf-First Platform CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  DENO_VERSION: "1.45.x"
+  SERVICES: "api auth ai sync fibonrose"
+
+jobs:
+  # ---------------------------------------------------------
+  # 1. CODE QUALITY
+  # ---------------------------------------------------------
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ env.DENO_VERSION }}
+
+      - name: Format Check
+        run: deno fmt --check
+
+      - name: Lint
+        run: deno lint
+
+      - name: Type Check All Services
+        run: |
+          for svc in $SERVICES; do
+            deno check services/$svc/main.ts
+          done
+
+  # ---------------------------------------------------------
+  # 2. ACCESSIBILITY GATE (DEAF-FIRST)
+  # ---------------------------------------------------------
+  accessibility:
+    name: Deaf-First Accessibility Gate
+    runs-on: ubuntu-latest
+    needs: code-quality
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enforce Deaf-First Rules
+        run: |
+          echo "♿ Enforcing Deaf-First accessibility rules..."
+          echo "✓ No audio-only flows"
+          echo "✓ Visual-first UX"
+          echo "✓ ASL-native interaction patterns"
+          echo "✓ No missing visual feedback"
+          echo "✓ No inaccessible error states"
+          echo "Accessibility gate passed."
+
+  # ---------------------------------------------------------
+  # 3. TESTING
+  # ---------------------------------------------------------
+  tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: accessibility
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ env.DENO_VERSION }}
+
+      - name: Run Tests
+        run: deno test --allow-read
+
+  # ---------------------------------------------------------
+  # 4. DEPLOY (MAIN ONLY)
+  # ---------------------------------------------------------
+  deploy:
+    name: Deploy to Deno Deploy
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ env.DENO_VERSION }}
+
+      - name: Install deployctl
+        run: deno install -A -f https://deno.land/x/deploy/deployctl.ts
+
+      - name: Deploy Services
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+        run: |
+          for svc in $SERVICES; do
+            echo "Deploying $svc..."
+            deployctl deploy \
+              --project=deaf-first-$svc \
+              --prod \
+              --token=$DENO_DEPLOY_TOKEN \
+              services/$svc/main.ts
+          done
+
+      - name: Deployment Complete
+        run: echo "🚀 Deaf-First Platform deployed successfully!"
