@@ -1,0 +1,115 @@
+# Cloud Build configuration for deployment on release tags
+# Deploys services to Cloud Run when a version tag is pushed
+
+steps:
+  # Install dependencies
+  - name: 'node:20'
+    id: 'install-dependencies'
+    entrypoint: 'npm'
+    args: ['ci']
+    
+  # Build all services
+  - name: 'node:20'
+    id: 'build'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+    waitFor: ['install-dependencies']
+    
+  # Build and push Docker images
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-images'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-deafauth:${TAG_NAME}'
+      - '-f'
+      - 'services/deafauth/Dockerfile'
+      - '.'
+    waitFor: ['build']
+  
+  # Deploy to Cloud Run - DeafAUTH
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-deafauth'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_PROJECT_NAME}-deafauth-functions'
+      - '--image'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-deafauth:${TAG_NAME}'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--service-account'
+      - '${_SERVICE_ACCOUNT}'
+    waitFor: ['build-images']
+  
+  # Deploy to Cloud Run - PinkSync
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-pinksync'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_PROJECT_NAME}-pinksync-api'
+      - '--image'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-pinksync:${TAG_NAME}'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--service-account'
+      - '${_SERVICE_ACCOUNT}'
+    waitFor: ['build-images']
+  
+  # Deploy to Cloud Run - FibonRose
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-fibonrose'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_PROJECT_NAME}-fibonrose-api'
+      - '--image'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-fibonrose:${TAG_NAME}'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--service-account'
+      - '${_SERVICE_ACCOUNT}'
+    waitFor: ['build-images']
+  
+  # Run post-deployment tests
+  - name: 'node:20'
+    id: 'smoke-tests'
+    entrypoint: 'npm'
+    args: ['run', 'test:smoke']
+    env:
+      - 'NODE_ENV=production'
+    waitFor: ['deploy-deafauth', 'deploy-pinksync', 'deploy-fibonrose']
+
+# Build images
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-deafauth:${TAG_NAME}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-pinksync:${TAG_NAME}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_PROJECT_NAME}-fibonrose:${TAG_NAME}'
+
+# Build timeout
+timeout: '2400s'
+
+# Logging options
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'N1_HIGHCPU_8'
+  
+# Substitutions
+substitutions:
+  _REGION: 'us-central1'
+  _ARTIFACT_REGISTRY: 'deaf-first-production-containers'
+  _PROJECT_NAME: 'deaf-first-production'
+  _SERVICE_ACCOUNT: 'cloudbuild@deaf-first-production.iam.gserviceaccount.com'
