@@ -1,3 +1,5 @@
+[![Coverage](https://codecov.io/gh/pinkycollie/deaf-first-platform/branch/main/graph/badge.svg)](https://codecov.io/gh/pinkycollie/deaf-first-platform)
+
 # MBTQ Deaf-First Platform
 
 A comprehensive platform built with deaf-first principles, providing accessible financial services, AI-powered assistance, and decentralized governance.
