@@ -23,7 +23,7 @@
     "dotenv": "^16.4.5",
     "pg": "^8.13.1",
     "jsonwebtoken": "^9.0.2",
-    "bcrypt": "^5.1.1"
+    "bcrypt": "^6.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
